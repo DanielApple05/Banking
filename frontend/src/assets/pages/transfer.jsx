@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   HelpCircle,
@@ -13,27 +13,96 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getBalance, sendTransfer } from "../../api/transactions";
 
+const beneficiaries = [
+  { id: 1, name: "Alex M.",  initials: "AM", account: "1234567890", bg: "bg-green-100",  text: "text-green-700"  },
+  { id: 2, name: "John D.",  initials: "JD", account: "5678901234", bg: "bg-purple-100", text: "text-purple-700" },
+  { id: 3, name: "Sarah C.", initials: "SC", account: "9012345678", bg: "bg-orange-100", text: "text-orange-600" },
+];
 
-const banks = ["First National Bank", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
+const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
 const Transfer = () => {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [availableBalance, setAvailableBalance] = useState(0);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("NGN");
   const [narration, setNarration] = useState("");
   const [showBeneficiaryDrop, setShowBeneficiaryDrop] = useState(false);
   const [showBankDrop, setShowBankDrop] = useState(false);
   const [showCurrencyDrop, setShowCurrencyDrop] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-const handleReview = (e) => {
-  e.preventDefault();
-  navigate("/review-transfer");
-};
+  // Fetch real balance on mount
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const res = await getBalance();
+        setAvailableBalance(res.data.balance);
+      } catch (err) {
+        console.error('Failed to fetch balance:', err);
+      }
+    };
+    fetchBalance();
+  }, []);
+
+  const selectBeneficiary = (b) => {
+    setSelectedBeneficiary(b.name);
+    setAccountNumber(b.account);
+    setShowBeneficiaryDrop(false);
+  };
+
+  const handleReview = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!accountNumber)                    return setError('Please enter or select a recipient account.');
+    if (!selectedBank)                     return setError('Please select a bank.');
+    if (!amount || Number(amount) <= 0)    return setError('Please enter a valid amount.');
+    if (Number(amount) > availableBalance) return setError('Insufficient balance.');
+
+    setLoading(true);
+    try {
+      const res = await sendTransfer({
+        recipientAccount: accountNumber,
+        bank: selectedBank,
+        amount: Number(amount),
+        narration,
+      });
+
+      navigate('/transfer-success', {
+        state: {
+          amount: Number(amount),
+          currency,
+          recipient: selectedBeneficiary || accountNumber,
+          bank: selectedBank,
+          narration,
+          newBalance: res.data.balance,
+          transactionId: res.data.transaction._id,
+        }
+      });
+
+    } catch (err) {
+      const message = err.response?.data?.message || 'Transfer failed. Please try again.';
+      navigate('/transfer-failed', {
+        state: {
+          amount: Number(amount),
+          currency,
+          recipient: selectedBeneficiary || accountNumber,
+          bank: selectedBank,
+          reason: message,
+        }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
@@ -61,6 +130,13 @@ const handleReview = (e) => {
           </div>
           <ShieldCheck className="w-10 h-10 text-blue-200 shrink-0" />
         </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="w-full bg-red-50 border border-red-200 text-red-500 text-sm rounded-xl px-4 py-3 mb-4">
+            {error}
+          </div>
+        )}
 
         {/* Beneficiary */}
         <label className="block text-sm font-extrabold text-gray-900 mb-2">Beneficiary</label>
@@ -91,7 +167,7 @@ const handleReview = (e) => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-900">{b.name}</p>
-                    <p className="text-xs text-gray-400">{b.account}</p>
+                    <p className="text-xs text-gray-400">**** {b.account.slice(-4)}</p>
                   </div>
                 </button>
               ))}
@@ -187,7 +263,7 @@ const handleReview = (e) => {
           </div>
         </div>
         <p className="text-xs text-gray-400 mb-5 pl-1">
-          Available Balance: <span className="text-blue-600 font-semibold">$4,250.00</span>
+          Available Balance: <span className="text-blue-600 font-semibold">₦{availableBalance.toLocaleString()}</span>
         </p>
 
         {/* Narration */}
@@ -210,11 +286,36 @@ const handleReview = (e) => {
         {/* Review Transfer Button */}
         <button
           onClick={handleReview}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 rounded-2xl transition text-base mb-8"
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 text-white font-bold py-4 rounded-2xl transition text-base mb-8
+            ${loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'}`}
         >
           <SendHorizonal className="w-5 h-5" />
-          Review Transfer
+          {loading ? 'Processing...' : 'Review Transfer'}
         </button>
+
+        {/* Recent Beneficiaries */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-extrabold text-gray-900">Recent Beneficiaries</h2>
+          <button className="flex items-center gap-1 text-blue-600 text-sm font-semibold hover:underline">
+            View All <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="flex flex-col gap-3">
+          {beneficiaries.map((b) => (
+            <button key={b.id} onClick={() => selectBeneficiary(b)}
+              className="flex items-center gap-4 bg-white rounded-2xl px-4 py-3 shadow-sm hover:shadow-md active:scale-95 transition-all text-left">
+              <div className={`w-10 h-10 rounded-full ${b.bg} ${b.text} flex items-center justify-center text-sm font-bold shrink-0`}>
+                {b.initials}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-gray-900">{b.name}</p>
+                <p className="text-xs text-gray-400">**** {b.account.slice(-4)}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-300" />
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

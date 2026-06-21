@@ -1,8 +1,16 @@
 import { XCircle, RefreshCw, Home, HeadphonesIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const TransferFailed = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const amount    = state?.amount ?? 0;
+  const currency  = state?.currency ?? 'NGN';
+  const recipient = state?.recipient ?? 'Recipient';
+  const bank      = state?.bank ?? '';
+  const reason    = state?.reason ?? 'Something went wrong.';
+  const now       = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center max-w-md mx-auto px-5">
@@ -23,18 +31,19 @@ const TransferFailed = () => {
       </p>
 
       {/* Amount */}
-      <div className="text-4xl font-extrabold text-red-500 mb-1">₦20,000.00</div>
+      <div className="text-4xl font-extrabold text-red-500 mb-1">
+        {currency === 'NGN' ? '₦' : '$'}{Number(amount).toLocaleString()}
+      </div>
       <p className="text-xs text-gray-400 mb-8">
-        To <span className="font-semibold text-gray-600">John Doe • Zenith Bank PLC</span>
+        To <span className="font-semibold text-gray-600">{recipient}{bank ? ` • ${bank}` : ''}</span>
       </p>
 
       {/* Details card */}
       <div className="w-full bg-white rounded-2xl shadow-sm px-5 py-4 flex flex-col gap-3 mb-6">
         {[
-          { label: "Transaction ID", value: "#TXN8827461" },
-          { label: "Date & Time", value: "June 19, 2026 • 09:45 AM" },
-          { label: "Reason", value: "Insufficient funds" },
-          { label: "Status", value: "Failed", red: true },
+          { label: "Date & Time", value: now },
+          { label: "Reason",      value: reason },
+          { label: "Status",      value: "Failed", red: true },
         ].map((row, i, arr) => (
           <div
             key={row.label}

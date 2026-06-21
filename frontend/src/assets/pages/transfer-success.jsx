@@ -1,8 +1,16 @@
 import { CheckCircle, ArrowUpRight, Home, ReceiptText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const TransferSuccess = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const amount        = state?.amount ?? 0;
+  const currency      = state?.currency ?? 'NGN';
+  const recipient     = state?.recipient ?? 'Recipient';
+  const bank          = state?.bank ?? '';
+  const transactionId = state?.transactionId ?? '';
+  const now           = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center max-w-md mx-auto px-5">
@@ -23,16 +31,20 @@ const TransferSuccess = () => {
       </p>
 
       {/* Amount */}
-      <div className="text-4xl font-extrabold text-green-500 mb-1">₦20,000.00</div>
-      <p className="text-xs text-gray-400 mb-8">Sent to <span className="font-semibold text-gray-600">John Doe • Zenith Bank PLC</span></p>
+      <div className="text-4xl font-extrabold text-green-500 mb-1">
+        {currency === 'NGN' ? '₦' : '$'}{Number(amount).toLocaleString()}
+      </div>
+      <p className="text-xs text-gray-400 mb-8">
+        Sent to <span className="font-semibold text-gray-600">{recipient}{bank ? ` • ${bank}` : ''}</span>
+      </p>
 
       {/* Summary pill */}
       <div className="w-full bg-white rounded-2xl shadow-sm px-5 py-4 flex flex-col gap-3 mb-8">
         {[
-          { label: "Transaction ID", value: "#TXN8827461" },
-          { label: "Date & Time", value: "June 19, 2026 • 09:45 AM" },
-          { label: "Transfer Fee", value: "₦10.00" },
-          { label: "Status", value: "Successful", green: true },
+          { label: "Transaction ID", value: transactionId ? `#${transactionId.slice(-8).toUpperCase()}` : '—' },
+          { label: "Date & Time",    value: now },
+          { label: "Transfer Fee",   value: "₦0.00" },
+          { label: "Status",         value: "Successful", green: true },
         ].map((row, i, arr) => (
           <div key={row.label} className={`flex items-center justify-between ${i < arr.length - 1 ? "border-b border-gray-100 pb-3" : ""}`}>
             <span className="text-sm text-gray-400">{row.label}</span>

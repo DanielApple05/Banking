@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Bell,
   User,
@@ -15,6 +15,7 @@ import {
   Landmark,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getBalance, getTransactions } from "../../api/transactions";
 
 const quickActions = [
   {
@@ -44,17 +45,35 @@ const quickActions = [
 ];
 
 const navItems = [
-  { label: "Home", icon: Home, path: "/dashboard", active: true },
-  { label: "Transactions", icon: List, path: "/transactions", active: false },
-  { label: "Transfer", icon: RefreshCw, path: "/transfer", active: false },
-  { label: "Cards", icon: CreditCard, path: "/cards", active: false },
-  { label: "Profile", icon: User, path: "/profile", active: false },
+  { label: "Home", icon: Home, path: "/dashboard" },
+  { label: "Transactions", icon: List, path: "/transactions" },
+  { label: "Transfer", icon: RefreshCw, path: "/transfer" },
+  { label: "Cards", icon: CreditCard, path: "/cards" },
+  { label: "Profile", icon: User, path: "/profile" },
 ];
+
+const getTransactionIcon = (category) => {
+  if (category === "Income")   return { icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
+  if (category === "Transfer") return { icon: <ArrowUpRight className="w-5 h-5 text-blue-500" />,    bg: "bg-blue-100"  };
+  if (category === "Expense")  return { icon: <CreditCard className="w-5 h-5 text-orange-400" />,    bg: "bg-orange-100"};
+  return { icon: <MoreHorizontal className="w-5 h-5 text-purple-400" />, bg: "bg-purple-100" };
+};
+
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    + ' • ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+};
 
 const Dashboard = () => {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [activeNav, setActiveNav] = useState("Home");
+  const [userData, setUserData] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -62,6 +81,43 @@ const Dashboard = () => {
     if (hour < 17) return "Good afternoon";
     return "Good evening";
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) { navigate('/'); return; }
+
+    const fetchData = async () => {
+      try {
+        const [balanceRes, txRes] = await Promise.all([
+          getBalance(),
+          getTransactions(),
+        ]);
+        setUserData(balanceRes.data);
+        setTransactions(txRes.data.slice(0, 4));
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+        if (err.response?.status === 401) {
+          localStorage.clear();
+          navigate('/');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 max-w-md mx-auto">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-gray-400 font-medium">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto relative">
@@ -72,13 +128,13 @@ const Dashboard = () => {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-              Hello, John <span>👋</span>
+              Hello, {storedUser.username || 'User'} <span>👋</span>
             </h1>
             <p className="text-gray-400 text-sm mt-0.5">{getGreeting()}</p>
           </div>
           <div className="flex items-center gap-3">
             <button className="relative p-2 rounded-full hover:bg-gray-100 transition" onClick={() => navigate("/notifications")}>
-              <Bell className="w-6 h-6 text-gray-700"  />
+              <Bell className="w-6 h-6 text-gray-700" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full" />
             </button>
             <button className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -106,24 +162,22 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-blue-100 text-sm font-medium">Total Balance</span>
                   <button onClick={() => setBalanceVisible(!balanceVisible)} className="text-blue-100 hover:text-white transition">
-                    {balanceVisible
-                      ? <Eye className="w-4 h-4" />
-                      : <EyeOff className="w-4 h-4" />}
+                    {balanceVisible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                   </button>
                 </div>
                 <div className="text-white text-4xl font-extrabold tracking-tight mb-4">
-                  {balanceVisible ? "$4,250.00" : "••••••••"}
+                  {balanceVisible ? `₦${userData?.balance?.toLocaleString() ?? '0.00'}` : "••••••••"}
                 </div>
                 <div className="text-blue-200 text-xs font-medium mb-0.5">Available Balance</div>
                 <div className="text-white text-lg font-bold">
-                  {balanceVisible ? "$4,250.00" : "••••••"}
+                  {balanceVisible ? `₦${userData?.balance?.toLocaleString() ?? '0.00'}` : "••••••"}
                 </div>
               </div>
               {/* Right: account number */}
               <div className="text-right">
                 <div className="text-blue-200 text-xs font-medium mb-1">Account Number</div>
                 <div className="text-white text-sm font-semibold tracking-widest">
-                  **** **** **** 5678
+                  **** **** **** {userData?.accountNumber?.slice(-4) ?? '----'}
                 </div>
               </div>
             </div>
@@ -150,6 +204,48 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
+
+        {/* Recent Transactions */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-extrabold text-gray-900">Recent Transactions</h2>
+            <button onClick={() => navigate("/transactions")} className="flex items-center gap-1 text-blue-600 text-sm font-semibold hover:underline">
+              View All <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {transactions.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-sm px-4 py-8 text-center text-gray-300">
+              <p className="text-sm font-semibold">No transactions yet</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-100">
+              {transactions.map((tx) => {
+                const { icon, bg } = getTransactionIcon(tx.category);
+                return (
+                  <div key={tx._id} className="flex items-center gap-4 px-4 py-4 hover:bg-gray-50 transition cursor-pointer">
+                    <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center shrink-0`}>
+                      {icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-gray-900 truncate">{tx.title}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{formatDate(tx.createdAt)}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className={`text-sm font-bold ${tx.type === 'credit' ? 'text-green-500' : 'text-gray-900'}`}>
+                        {tx.type === 'credit' ? '+' : '-'}₦{tx.amount.toLocaleString()}
+                      </p>
+                      <p className={`text-xs mt-0.5 ${tx.status === 'Failed' ? 'text-red-400' : 'text-gray-400'}`}>
+                        {tx.status}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
       </div>
 
       {/* Bottom Nav */}
