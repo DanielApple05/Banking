@@ -42,7 +42,6 @@ const navItems = [
   { label: "Home", icon: Home, path: "/dashboard" },
   { label: "Transactions", icon: List, path: "/transactions" },
   { label: "Transfer", icon: RefreshCw, path: "/transfer" },
-  { label: "Cards", icon: CreditCard, path: "/dashboard" },
   { label: "Profile", icon: User, path: "/dashboard" },
 ];
 
@@ -127,9 +126,8 @@ const Dashboard = () => {
             <p className="text-gray-400 text-sm mt-0.5">{getGreeting()}</p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-full hover:bg-gray-100 transition" onClick={() => navigate("/notifications")}>
+            <button className=" p-2 rounded-full hover:bg-gray-100 transition" onClick={() => navigate("/notifications")}>
               <Bell className="w-6 h-6 text-gray-700" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full" />
             </button>
             <button className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
               <User className="w-5 h-5 text-blue-500" />

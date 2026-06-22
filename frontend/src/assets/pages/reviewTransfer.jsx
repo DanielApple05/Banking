@@ -10,65 +10,66 @@ import {
   Lock,
   ReceiptText,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-// In a real app these would come from router state / props
-const transferDetails = {
-  recipientName: "John Doe",
-  accountNumber: "**** **** **** 5678",
-  bank: "Zenith Bank PLC",
-  amount: "₦20,000.00",
-  fee: "₦10.00",
-  total: "₦20,010.00",
-  narration: "Payment for services",
-};
-
-const summaryRows = [
-  {
-    label: "Recipient Name",
-    value: transferDetails.recipientName,
-    icon: <User className="w-4 h-4 text-blue-500" />,
-    valueClass: "text-gray-900 font-bold",
-  },
-  {
-    label: "Account Number",
-    value: transferDetails.accountNumber,
-    icon: <CreditCard className="w-4 h-4 text-blue-500" />,
-    valueClass: "text-gray-900 font-bold",
-  },
-  {
-    label: "Bank",
-    value: transferDetails.bank,
-    icon: <Landmark className="w-4 h-4 text-blue-500" />,
-    valueClass: "text-gray-900 font-bold",
-  },
-  {
-    label: "Amount",
-    value: transferDetails.amount,
-    icon: <DollarSign className="w-4 h-4 text-blue-500" />,
-    valueClass: "text-gray-900 font-bold",
-  },
-  {
-    label: "Transfer Fee",
-    value: transferDetails.fee,
-    icon: <ReceiptText className="w-4 h-4 text-blue-500" />,
-    valueClass: "text-gray-900 font-bold",
-  },
-  {
-    label: "Total Amount",
-    value: transferDetails.total,
-    icon: <Calculator className="w-4 h-4 text-green-500" />,
-    valueClass: "text-green-500 font-bold",
-    last: true,
-  },
-];
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ReviewTransfer = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { state } = useLocation();
 
-const handleConfirm = () => {
-  navigate("/confirm-transfer");
-};
+  // Read real data from Transfer.jsx navigation state
+  const recipient    = state?.recipient    ?? '—';
+  const accountNumber = state?.accountNumber ?? '—';
+  const bank         = state?.bank         ?? '—';
+  const amount       = state?.amount       ?? 0;
+  const currency     = state?.currency     ?? 'NGN';
+  const narration    = state?.narration    ?? 'No narration';
+  const fee          = 0;
+  const total        = amount + fee;
+
+  const summaryRows = [
+    {
+      label: "Recipient Name",
+      value: recipient,
+      icon: <User className="w-4 h-4 text-blue-500" />,
+      valueClass: "text-gray-900 font-bold",
+    },
+    {
+      label: "Account Number",
+      value: `**** **** **** ${accountNumber.slice(-4)}`,
+      icon: <CreditCard className="w-4 h-4 text-blue-500" />,
+      valueClass: "text-gray-900 font-bold",
+    },
+    {
+      label: "Bank",
+      value: bank,
+      icon: <Landmark className="w-4 h-4 text-blue-500" />,
+      valueClass: "text-gray-900 font-bold",
+    },
+    {
+      label: "Amount",
+      value: `₦${Number(amount).toLocaleString()}`,
+      icon: <DollarSign className="w-4 h-4 text-blue-500" />,
+      valueClass: "text-gray-900 font-bold",
+    },
+    {
+      label: "Transfer Fee",
+      value: `₦${fee.toLocaleString()}`,
+      icon: <ReceiptText className="w-4 h-4 text-blue-500" />,
+      valueClass: "text-gray-900 font-bold",
+    },
+    {
+      label: "Total Amount",
+      value: `₦${total.toLocaleString()}`,
+      icon: <Calculator className="w-4 h-4 text-green-500" />,
+      valueClass: "text-green-500 font-bold",
+      last: true,
+    },
+  ];
+
+  const handleConfirm = () => {
+    // Pass all state forward to ConfirmTransfer
+    navigate("/confirm-transfer", { state });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
@@ -79,7 +80,7 @@ const handleConfirm = () => {
           <ArrowLeft className="w-5 h-5 text-gray-800" />
         </button>
         <h1 className="text-lg font-extrabold text-gray-900">Review Transfer</h1>
-        <div className="w-9" /> {/* spacer to center title */}
+        <div className="w-9" />
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pb-10 flex flex-col gap-4">
@@ -96,7 +97,6 @@ const handleConfirm = () => {
 
         {/* Transfer Summary Card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          {/* Card Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
             <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
               <FileText className="w-4 h-4 text-blue-500" />
@@ -104,7 +104,6 @@ const handleConfirm = () => {
             <span className="text-sm font-extrabold text-gray-900">Transfer Summary</span>
           </div>
 
-          {/* Rows */}
           {summaryRows.map((row, i) => (
             <div
               key={row.label}
@@ -126,7 +125,7 @@ const handleConfirm = () => {
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-0.5">Narration</p>
-            <p className="text-sm font-bold text-gray-900">{transferDetails.narration}</p>
+            <p className="text-sm font-bold text-gray-900">{narration}</p>
           </div>
         </div>
 

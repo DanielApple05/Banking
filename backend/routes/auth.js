@@ -39,6 +39,7 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       accountNumber: generateAccountNumber(),
+      accountName: user.username
     });
 
     const token = generateToken(user);
@@ -51,6 +52,7 @@ router.post('/register', async (req, res) => {
         email: user.email,
         balance: user.balance,
         accountNumber: user.accountNumber,
+         accountName: user.username,
       },
     });
 
@@ -87,6 +89,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         balance: user.balance,
         accountNumber: user.accountNumber,
+        accountName: user.accountName,
       },
     });
 

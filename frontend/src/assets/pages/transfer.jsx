@@ -15,17 +15,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getBalance, sendTransfer } from "../../api/transactions";
 
-const beneficiaries = [
-  { id: 1, name: "Alex M.",  initials: "AM", account: "1234567890", bg: "bg-green-100",  text: "text-green-700"  },
-  { id: 2, name: "John D.",  initials: "JD", account: "5678901234", bg: "bg-purple-100", text: "text-purple-700" },
-  { id: 3, name: "Sarah C.", initials: "SC", account: "9012345678", bg: "bg-orange-100", text: "text-orange-600" },
-];
 
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
 const Transfer = () => {
   const navigate = useNavigate();
+  const [beneficiaries, setBeneficiaries] = useState(
+    JSON.parse(localStorage.getItem('beneficiaries') || '[]')
+  );
   const [availableBalance, setAvailableBalance] = useState(0);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -62,9 +60,9 @@ const Transfer = () => {
     e.preventDefault();
     setError('');
 
-    if (!accountNumber)                    return setError('Please enter or select a recipient account.');
-    if (!selectedBank)                     return setError('Please select a bank.');
-    if (!amount || Number(amount) <= 0)    return setError('Please enter a valid amount.');
+    if (!accountNumber) return setError('Please enter or select a recipient account.');
+    if (!selectedBank) return setError('Please select a bank.');
+    if (!amount || Number(amount) <= 0) return setError('Please enter a valid amount.');
     if (Number(amount) > availableBalance) return setError('Insufficient balance.');
 
     setLoading(true);
@@ -75,8 +73,22 @@ const Transfer = () => {
         amount: Number(amount),
         narration,
       });
-
-      navigate('/transfer-success', {
+      const existing = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
+      const alreadyExists = existing.find((b) => b.account === accountNumber);
+      if (!alreadyExists) {
+        const newBeneficiary = {
+          id: Date.now(),
+          name: selectedBeneficiary || accountNumber,
+          initials: (selectedBeneficiary || accountNumber).slice(0, 2).toUpperCase(),
+          account: accountNumber,
+          bg: "bg-blue-100",
+          text: "text-blue-700",
+        };
+        const updated = [newBeneficiary, ...existing].slice(0, 5);
+        localStorage.setItem('beneficiaries', JSON.stringify(updated));
+        setBeneficiaries(updated); // ← this is the key line
+      }
+      navigate('/review-transfer', {
         state: {
           amount: Number(amount),
           currency,
