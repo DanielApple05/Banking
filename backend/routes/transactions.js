@@ -85,4 +85,20 @@ router.get('/balance', protect, async (req, res) => {
   }
 });
 
+// GET /api/transactions/lookup/:accountNumber
+router.get('/lookup/:accountNumber', protect, async (req, res) => {
+  try {
+    const user = await User.findOne({ accountNumber: req.params.accountNumber })
+      .select('username accountNumber');
+
+    if (!user) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+    res.json({ username: user.username, accountNumber: user.accountNumber });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

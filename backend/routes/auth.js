@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       accountNumber: generateAccountNumber(),
-      accountName: user.username
+      accountName: username,
     });
 
     const token = generateToken(user);

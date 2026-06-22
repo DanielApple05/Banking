@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getBalance, sendTransfer } from "../../api/transactions";
+import { getBalance, sendTransfer, lookupAccount } from "../../api/transactions";
 
 
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
@@ -28,6 +28,8 @@ const Transfer = () => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
+  const [resolvedName, setResolvedName] = useState('');
+  const [lookupLoading, setLookupLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("NGN");
   const [narration, setNarration] = useState("");
@@ -53,6 +55,7 @@ const Transfer = () => {
   const selectBeneficiary = (b) => {
     setSelectedBeneficiary(b.name);
     setAccountNumber(b.account);
+    setSelectedBank(b.bank)
     setShowBeneficiaryDrop(false);
   };
 
@@ -86,17 +89,16 @@ const Transfer = () => {
         };
         const updated = [newBeneficiary, ...existing].slice(0, 5);
         localStorage.setItem('beneficiaries', JSON.stringify(updated));
-        setBeneficiaries(updated); // ← this is the key line
+        setBeneficiaries(updated); 
       }
       navigate('/review-transfer', {
         state: {
+          recipient: resolvedName || selectedBeneficiary || accountNumber,
+          accountNumber,
+          bank: selectedBank,
           amount: Number(amount),
           currency,
-          recipient: selectedBeneficiary || accountNumber,
-          bank: selectedBank,
           narration,
-          newBalance: res.data.balance,
-          transactionId: res.data.transaction._id,
         }
       });
 
@@ -115,6 +117,27 @@ const Transfer = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const lookup = async () => {
+      if (accountNumber.length < 10) {
+        setResolvedName('');
+        return;
+      }
+      setLookupLoading(true);
+      try {
+        const res = await lookupAccount(accountNumber);
+        setResolvedName(res.data.username);
+      } catch (err) {
+        setResolvedName('');
+      } finally {
+        setLookupLoading(false);
+      }
+    };
+
+    const delay = setTimeout(lookup, 600); // debounce — waits 600ms after typing stops
+    return () => clearTimeout(delay);
+  }, [accountNumber]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
@@ -206,6 +229,16 @@ const Transfer = () => {
           />
           <User className="w-5 h-5 text-blue-400 shrink-0" />
         </div>
+        {/* Account name display — shows below input */}
+        {lookupLoading && (
+          <p className="text-xs text-gray-400 mb-5 pl-1">Looking up account...</p>
+        )}
+        {resolvedName && !lookupLoading && (
+          <p className="text-xs text-green-600 font-semibold mb-5 pl-1">✓ {resolvedName}</p>
+        )}
+        {!resolvedName && !lookupLoading && accountNumber.length >= 10 && (
+          <p className="text-xs text-red-400 mb-5 pl-1">Account not found</p>
+        )}
 
         {/* Bank */}
         <label className="block text-sm font-extrabold text-gray-900 mb-2">Bank</label>
