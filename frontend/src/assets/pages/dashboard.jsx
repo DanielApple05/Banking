@@ -28,28 +28,22 @@ const quickActions = [
     label: "Deposit",
     icon: <ArrowDownToLine className="w-6 h-6 text-white" />,
     bg: "bg-green-500",
-    path: "/deposit",
+    path: "/dashboard",
   },
   {
     label: "Withdraw",
     icon: <CreditCard className="w-6 h-6 text-white" />,
     bg: "bg-purple-600",
-    path: "/withdraw",
+    path: "/dashboard",
   },
-  // {
-  //   label: "More",
-  //   icon: <MoreHorizontal className="w-6 h-6 text-white" />,
-  //   bg: "bg-orange-400",
-  //   path: "/more",
-  // },
 ];
 
 const navItems = [
   { label: "Home", icon: Home, path: "/dashboard" },
   { label: "Transactions", icon: List, path: "/transactions" },
   { label: "Transfer", icon: RefreshCw, path: "/transfer" },
-  { label: "Cards", icon: CreditCard, path: "/cards" },
-  { label: "Profile", icon: User, path: "/profile" },
+  { label: "Cards", icon: CreditCard, path: "/dashboard" },
+  { label: "Profile", icon: User, path: "/dashboard" },
 ];
 
 const getTransactionIcon = (category) => {
@@ -187,7 +181,7 @@ const Dashboard = () => {
         {/* Quick Actions */}
         <div className="mb-7">
           <h2 className="text-lg font-extrabold text-gray-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {quickActions.map((action) => (
               <button
                 key={action.label}
