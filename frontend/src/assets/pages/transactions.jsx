@@ -12,7 +12,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getTransactions } from "../../api/transactions";
 
-const filters = ["All", "Income", "Transfer", "Expense"];
 
 const getTransactionIcon = (category) => {
   if (category === "Income") {
