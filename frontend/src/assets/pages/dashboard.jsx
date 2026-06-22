@@ -36,12 +36,12 @@ const quickActions = [
     bg: "bg-purple-600",
     path: "/withdraw",
   },
-  {
-    label: "More",
-    icon: <MoreHorizontal className="w-6 h-6 text-white" />,
-    bg: "bg-orange-400",
-    path: "/more",
-  },
+  // {
+  //   label: "More",
+  //   icon: <MoreHorizontal className="w-6 h-6 text-white" />,
+  //   bg: "bg-orange-400",
+  //   path: "/more",
+  // },
 ];
 
 const navItems = [
@@ -78,7 +78,7 @@ const Dashboard = () => {
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
+    if (hour < 14) return "Good afternoon";
     return "Good evening";
   };
 
