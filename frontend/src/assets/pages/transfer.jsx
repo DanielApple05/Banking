@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getBalance, sendTransfer, lookupAccount } from "../../api/transactions";
+import { getBalance, lookupAccount } from "../../api/transactions";
 
 
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
@@ -55,7 +55,6 @@ const Transfer = () => {
   const selectBeneficiary = (b) => {
     setSelectedBeneficiary(b.name);
     setAccountNumber(b.account);
-    setSelectedBank(b.bank)
     setShowBeneficiaryDrop(false);
   };
 
@@ -70,12 +69,7 @@ const Transfer = () => {
 
     setLoading(true);
     try {
-      const res = await sendTransfer({
-        recipientAccount: accountNumber,
-        bank: selectedBank,
-        amount: Number(amount),
-        narration,
-      });
+      // Save beneficiary if new
       const existing = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const alreadyExists = existing.find((b) => b.account === accountNumber);
       if (!alreadyExists) {
@@ -91,6 +85,8 @@ const Transfer = () => {
         localStorage.setItem('beneficiaries', JSON.stringify(updated));
         setBeneficiaries(updated); 
       }
+      
+      // Navigate to review WITHOUT calling backend
       navigate('/review-transfer', {
         state: {
           recipient: resolvedName || selectedBeneficiary || accountNumber,
@@ -103,16 +99,8 @@ const Transfer = () => {
       });
 
     } catch (err) {
-      const message = err.response?.data?.message || 'Transfer failed. Please try again.';
-      navigate('/transfer-failed', {
-        state: {
-          amount: Number(amount),
-          currency,
-          recipient: selectedBeneficiary || accountNumber,
-          bank: selectedBank,
-          reason: message,
-        }
-      });
+      console.error('Error:', err);
+      setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -185,7 +173,7 @@ const Transfer = () => {
           >
             <User className="w-5 h-5 text-blue-500 shrink-0" />
             <span className={`flex-1 text-sm ${selectedBeneficiary ? "text-gray-900 font-semibold" : "text-gray-400"}`}>
-              {selectedBeneficiary || "Select Beneficiary"}
+              Select Beneficiary
             </span>
             <ChevronDown className="w-4 h-4 text-gray-400" />
           </button>

@@ -7,27 +7,30 @@ import {
   CreditCard,
   ShieldCheck,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-const transferDetails = {
-  recipient: "John Doe",
-  bank: "Zenith Bank PLC",
-  accountNumber: "**** **** **** 5678",
-  amount: "₦20,000.00",
-  total: "₦20,010.00",
-};
-
-const summaryRows = [
-  { label: "Recipient", value: transferDetails.recipient, icon: <User className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
-  { label: "Bank", value: transferDetails.bank, icon: <Landmark className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
-  { label: "Account Number", value: transferDetails.accountNumber, icon: <CreditCard className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
-  { label: "Amount", value: transferDetails.amount, icon: <span className="text-green-500 font-bold text-sm">₦</span>, bg: "bg-green-50" },
-];
+import { useNavigate, useLocation } from "react-router-dom";
+import { sendTransfer } from "../../api/transactions";
 
 const ConfirmTransfer = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [pin, setPin] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+
+  // Read real data from ReviewTransfer
+  const recipient = state?.recipient ?? "—";
+  const accountNumber = state?.accountNumber ?? "—";
+  const bank = state?.bank ?? "—";
+  const amount = state?.amount ?? 0;
+  const narration = state?.narration ?? "";
+
+  const summaryRows = [
+    { label: "Recipient", value: recipient, icon: <User className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
+    { label: "Bank", value: bank, icon: <Landmark className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
+    { label: "Account Number", value: `**** **** **** ${accountNumber.slice(-4)}`, icon: <CreditCard className="w-4 h-4 text-blue-400" />, bg: "bg-blue-50" },
+    { label: "Amount", value: `₦${Number(amount).toLocaleString()}`, icon: <span className="text-green-500 font-bold text-sm">₦</span>, bg: "bg-green-50" },
+  ];
 
   const handlePinChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
@@ -45,9 +48,32 @@ const ConfirmTransfer = () => {
     }
   };
 
- const handleConfirm = () => {
-  navigate("/transfer-success");
-};
+  const handleConfirm = async () => {
+    const pinCode = pin.join("");
+    if (pinCode.length !== 4) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await sendTransfer({
+        recipientAccount: accountNumber,
+        bank,
+        amount,
+        narration,
+        pin: pinCode,
+      });
+
+      if (response.status === 201) {
+        navigate("/transfer-success", { state: { transaction: response.data.transaction } });
+      }
+    } catch (err) {
+      console.error("Transfer error:", err);
+      setError(err.response?.data?.message || "Transfer failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const pinFilled = pin.filter(Boolean).length;
 
@@ -104,7 +130,7 @@ const ConfirmTransfer = () => {
           {/* Total row — no icon, bold label */}
           <div className="flex items-center px-5 py-4">
             <span className="flex-1 text-sm font-extrabold text-gray-900">Total Amount</span>
-            <span className="text-sm font-extrabold text-green-500">{transferDetails.total}</span>
+            <span className="text-sm font-extrabold text-green-500">₦{Number(amount).toLocaleString()}</span>
           </div>
         </div>
 
@@ -138,23 +164,40 @@ const ConfirmTransfer = () => {
           </p>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="w-full bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+
         {/* Confirm Button */}
         <button
           onClick={handleConfirm}
-          disabled={pinFilled < 4}
+          disabled={pinFilled < 4 || loading}
           className={`w-full flex items-center justify-center gap-2 font-bold py-4 rounded-2xl transition text-base mb-3
-            ${pinFilled === 4
+            ${pinFilled === 4 && !loading
               ? "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white"
               : "bg-blue-300 text-white cursor-not-allowed"}`}
         >
-          <Lock className="w-5 h-5" />
-          Confirm Transfer
+          {loading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Lock className="w-5 h-5" />
+              Confirm Transfer
+            </>
+          )}
         </button>
 
         {/* Cancel */}
         <button
           onClick={() => navigate(-1)}
-          className="w-full text-center text-blue-600 font-semibold text-sm py-2 hover:underline transition mb-6"
+          disabled={loading}
+          className="w-full text-center text-blue-600 font-semibold text-sm py-2 hover:underline transition mb-6 disabled:text-gray-400 disabled:cursor-not-allowed"
         >
           Cancel Transfer
         </button>

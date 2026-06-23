@@ -5,12 +5,22 @@ const TransferSuccess = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const amount        = state?.amount ?? 0;
+  // Get data from state passed from confirmTransfer
+  const transaction = state?.transaction || {};
+  const amount        = state?.amount ?? transaction.amount ?? 0;
   const currency      = state?.currency ?? 'NGN';
   const recipient     = state?.recipient ?? 'Recipient';
   const bank          = state?.bank ?? '';
-  const transactionId = state?.transactionId ?? '';
-  const now           = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+  const transactionId = transaction._id || '';
+  const createdAt     = transaction.createdAt || new Date();
+  const status        = transaction.status || 'Successful';
+  const fee           = 0; // No fees for now
+
+  const now = new Date(createdAt).toLocaleString('en-US', { 
+    dateStyle: 'medium', 
+    timeStyle: 'short' 
+  });
+  
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center max-w-md mx-auto px-5">
@@ -43,8 +53,8 @@ const TransferSuccess = () => {
         {[
           { label: "Transaction ID", value: transactionId ? `#${transactionId.slice(-8).toUpperCase()}` : '—' },
           { label: "Date & Time",    value: now },
-          { label: "Transfer Fee",   value: "₦0.00" },
-          { label: "Status",         value: "Successful", green: true },
+          { label: "Transfer Fee",   value: `₦${fee.toLocaleString()}` },
+          { label: "Status",         value: status, green: true },
         ].map((row, i, arr) => (
           <div key={row.label} className={`flex items-center justify-between ${i < arr.length - 1 ? "border-b border-gray-100 pb-3" : ""}`}>
             <span className="text-sm text-gray-400">{row.label}</span>

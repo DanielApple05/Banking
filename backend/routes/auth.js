@@ -52,7 +52,7 @@ router.post('/register', async (req, res) => {
         email: user.email,
         balance: user.balance,
         accountNumber: user.accountNumber,
-         accountName: user.username,
+        accountName: user.accountName,
       },
     });
 
