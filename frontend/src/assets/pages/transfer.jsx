@@ -19,16 +19,11 @@ import { getBalance, lookupAccount } from "../../api/transactions";
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
-const getInitials = (value = "") => {
-  const name = String(value || "").trim();
-  if (!name) return "?";
-
-  const parts = name.split(/\s+/).filter(Boolean);
-  if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase();
-  }
-
-  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+const getFirstTwoLetters = (name = "") => {
+  return String(name)
+    .trim()
+    .slice(0, 2)
+    .toUpperCase();
 };
 
 const Transfer = () => {
@@ -36,7 +31,6 @@ const Transfer = () => {
   const [beneficiaries, setBeneficiaries] = useState(
     JSON.parse(localStorage.getItem('beneficiaries') || '[]')
   );
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   const [availableBalance, setAvailableBalance] = useState(0);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -65,11 +59,6 @@ const Transfer = () => {
     fetchBalance();
   }, []);
 
-  const selectBeneficiary = (b) => {
-    setSelectedBeneficiary(b.name);
-    setAccountNumber(b.account);
-    setShowBeneficiaryDrop(false);
-  };
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -90,7 +79,7 @@ const Transfer = () => {
         const newBeneficiary = {
           id: Date.now(),
           name: beneficiaryName,
-          initials: getInitials(beneficiaryName),
+          initials: getFirstTwoLetters(beneficiaryName),
           account: accountNumber,
           bg: "bg-blue-100",
           text: "text-blue-700",
@@ -99,7 +88,6 @@ const Transfer = () => {
         localStorage.setItem('beneficiaries', JSON.stringify(updated));
         setBeneficiaries(updated);
       }
-
       // Navigate to review WITHOUT calling backend
       navigate('/review-transfer', {
         state: {
@@ -118,6 +106,12 @@ const Transfer = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+    const selectBeneficiary = (b) => {
+    setSelectedBeneficiary(b.name);
+    setAccountNumber(b.account);
+    setShowBeneficiaryDrop(false);
   };
 
   useEffect(() => {

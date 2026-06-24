@@ -11,22 +11,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getTransactions } from "../../api/transactions";
-import { getTransactionIcon } from "../../utils";
+import { getTransactionIcon, getFormatTime, getFormatDate } from "../../utils";
 import { getToken } from "../../helpers";
-
-
-const formatDisplayDate = (value) =>
-  new Date(value).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-const formatDisplayTime = (value) =>
-  new Date(value).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
 const formatCurrency = (amount) => `₦${Number(amount || 0).toLocaleString()}`;
 
@@ -66,7 +52,7 @@ const Transactions = () => {
   });
 
   const grouped = filtered.reduce((acc, tx) => {
-    const date = formatDisplayDate(tx.createdAt);
+    const date = getFormatDate(tx.createdAt);
     if (!acc[date]) acc[date] = [];
     acc[date].push(tx);
     return acc;
@@ -135,7 +121,7 @@ const Transactions = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-900 truncate">{tx.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{formatDisplayTime(tx.createdAt)}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{getFormatTime(tx.createdAt)}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className={`text-sm font-bold ${isCredit ? "text-green-500" : "text-gray-900"}`}>
