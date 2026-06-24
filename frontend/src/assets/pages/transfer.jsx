@@ -19,12 +19,12 @@ import { getBalance, lookupAccount } from "../../api/transactions";
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
-const getFirstTwoLetters = (name = "") => {
-  return String(name)
-    .trim()
-    .slice(0, 2)
-    .toUpperCase();
-};
+// const getFirstTwoLetters = (name = "") => {
+//   return String(name)
+//     .trim()
+//     .slice(0, 2)
+//     .toUpperCase();
+// };
 
 const Transfer = () => {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const Transfer = () => {
         const newBeneficiary = {
           id: Date.now(),
           name: beneficiaryName,
-          initials: getFirstTwoLetters(beneficiaryName),
+          initials: beneficiaryName.trim().slice(0, 2).toUpperCase(),
           account: accountNumber,
           bg: "bg-blue-100",
           text: "text-blue-700",
