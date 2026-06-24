@@ -16,6 +16,15 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getBalance, getTransactions } from "../../api/transactions";
+import {
+  getUserFromToken,
+  getGreeting,
+  getTransactionIcon,
+  getFormatDate,
+  getFormatTime,
+}
+  from "../../utils";
+import { getToken } from "../../helpers";
 
 const quickActions = [
   {
@@ -45,19 +54,6 @@ const navItems = [
   { label: "Profile", icon: User, path: "/dashboard" },
 ];
 
-const getTransactionIcon = (category) => {
-  if (category === "Income") return { icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
-  if (category === "Transfer") return { icon: <ArrowUpRight className="w-5 h-5 text-blue-500" />, bg: "bg-blue-100" };
-  if (category === "Expense") return { icon: <CreditCard className="w-5 h-5 text-orange-400" />, bg: "bg-orange-100" };
-  return { icon: <MoreHorizontal className="w-5 h-5 text-purple-400" />, bg: "bg-purple-100" };
-};
-
-const formatDate = (dateStr) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    + ' • ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-};
-
 const Dashboard = () => {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [activeNav, setActiveNav] = useState("Home");
@@ -68,16 +64,8 @@ const Dashboard = () => {
 
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 14) return "Good afternoon";
-    return "Good evening";
-  };
-
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) { navigate('/'); return; }
+    const token = getToken();
 
     const fetchData = async () => {
       try {
@@ -222,7 +210,9 @@ const Dashboard = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-bold text-gray-900 truncate">{tx.title}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{formatDate(tx.createdAt)}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {getFormatDate(tx.createdAt)} • {getFormatTime(tx.createdAt)}
+                      </p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className={`text-sm font-bold ${tx.type === 'credit' ? 'text-green-500' : 'text-gray-900'}`}>

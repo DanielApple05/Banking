@@ -11,35 +11,9 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getTransactions } from "../../api/transactions";
+import { getTransactionIcon } from "../../utils";
+import { getToken } from "../../helpers";
 
-
-const getTransactionIcon = (category) => {
-  if (category === "Income") {
-    return {
-      icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />,
-      iconBg: "bg-green-100",
-    };
-  }
-
-  if (category === "Transfer") {
-    return {
-      icon: <ArrowUpRight className="w-5 h-5 text-blue-500" />,
-      iconBg: "bg-blue-100",
-    };
-  }
-
-  if (category === "Expense") {
-    return {
-      icon: <CreditCard className="w-5 h-5 text-orange-400" />,
-      iconBg: "bg-orange-100",
-    };
-  }
-
-  return {
-    icon: <MoreHorizontal className="w-5 h-5 text-purple-400" />,
-    iconBg: "bg-purple-100",
-  };
-};
 
 const formatDisplayDate = (value) =>
   new Date(value).toLocaleDateString("en-US", {
@@ -64,11 +38,7 @@ const Transactions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-      return;
-    }
+    const token = getToken();
 
     const fetchTransactions = async () => {
       try {
@@ -152,7 +122,7 @@ const Transactions = () => {
 
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {txs.map((tx) => {
-                  const { icon, iconBg } = getTransactionIcon(tx.category);
+                  const { icon, bg } = getTransactionIcon(tx.category);
                   const isCredit = tx.type === "credit";
 
                   return (
@@ -160,7 +130,7 @@ const Transactions = () => {
                       key={tx._id}
                       className="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 transition text-left"
                     >
-                      <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center shrink-0`}>
+                      <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center shrink-0`}>
                         {icon}
                       </div>
                       <div className="flex-1 min-w-0">

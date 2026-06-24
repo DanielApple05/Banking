@@ -9,6 +9,7 @@ import TransferSuccess from './assets/pages/transfer-success';
 import TransferFailed from './assets/pages/transferFailed';
 import Transactions from './assets/pages/transactions';
 import Notifications from './assets/pages/notifications';
+import ProtectedRoute from './assets/components/protectedRoute';
 
 
 
@@ -19,6 +20,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Login />} />
+        {/* protected route */}
+        <Route element={<ProtectedRoute />}></Route>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transfer" element={<Transfer />} />
         <Route path="/review-transfer" element={<ReviewTransfer />} />
@@ -27,6 +30,7 @@ function App() {
         <Route path="/transfer-failed" element={<TransferFailed />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route />
       </Routes>
     </>
   )
