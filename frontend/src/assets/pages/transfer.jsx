@@ -19,11 +19,24 @@ import { getBalance, lookupAccount } from "../../api/transactions";
 const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
+const getInitials = (value = "") => {
+  const name = String(value || "").trim();
+  if (!name) return "?";
+
+  const parts = name.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+};
+
 const Transfer = () => {
   const navigate = useNavigate();
   const [beneficiaries, setBeneficiaries] = useState(
     JSON.parse(localStorage.getItem('beneficiaries') || '[]')
   );
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   const [availableBalance, setAvailableBalance] = useState(0);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -73,19 +86,20 @@ const Transfer = () => {
       const existing = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const alreadyExists = existing.find((b) => b.account === accountNumber);
       if (!alreadyExists) {
+        const beneficiaryName = resolvedName || selectedBeneficiary || 'Unknown';
         const newBeneficiary = {
           id: Date.now(),
-          name: selectedBeneficiary || accountNumber,
-          initials: (selectedBeneficiary || accountNumber).slice(0, 2).toUpperCase(),
+          name: beneficiaryName,
+          initials: getInitials(beneficiaryName),
           account: accountNumber,
           bg: "bg-blue-100",
           text: "text-blue-700",
         };
         const updated = [newBeneficiary, ...existing].slice(0, 5);
         localStorage.setItem('beneficiaries', JSON.stringify(updated));
-        setBeneficiaries(updated); 
+        setBeneficiaries(updated);
       }
-      
+
       // Navigate to review WITHOUT calling backend
       navigate('/review-transfer', {
         state: {
@@ -217,6 +231,7 @@ const Transfer = () => {
           />
           <User className="w-5 h-5 text-blue-400 shrink-0" />
         </div>
+
         {/* Account name display — shows below input */}
         {lookupLoading && (
           <p className="text-xs text-gray-400 mb-5 pl-1">Looking up account...</p>

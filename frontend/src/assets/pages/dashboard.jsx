@@ -46,9 +46,9 @@ const navItems = [
 ];
 
 const getTransactionIcon = (category) => {
-  if (category === "Income")   return { icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
-  if (category === "Transfer") return { icon: <ArrowUpRight className="w-5 h-5 text-blue-500" />,    bg: "bg-blue-100"  };
-  if (category === "Expense")  return { icon: <CreditCard className="w-5 h-5 text-orange-400" />,    bg: "bg-orange-100"};
+  if (category === "Income") return { icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
+  if (category === "Transfer") return { icon: <ArrowUpRight className="w-5 h-5 text-blue-500" />, bg: "bg-blue-100" };
+  if (category === "Expense") return { icon: <CreditCard className="w-5 h-5 text-orange-400" />, bg: "bg-orange-100" };
   return { icon: <MoreHorizontal className="w-5 h-5 text-purple-400" />, bg: "bg-purple-100" };
 };
 
@@ -121,7 +121,8 @@ const Dashboard = () => {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-              Hello, {storedUser.username || 'User'} <span>👋</span>
+              Hello, {storedUser.username.split(' ')[0]
+                || 'User'} <span>👋</span>
             </h1>
             <p className="text-gray-400 text-sm mt-0.5">{getGreeting()}</p>
           </div>
