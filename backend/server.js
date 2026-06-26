@@ -10,10 +10,9 @@ const app = express();
 
 // Middleware
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://ease-swift-banking.vercel.app",
-];
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : ['http://localhost:5173'];
 
 app.use(
   cors({
