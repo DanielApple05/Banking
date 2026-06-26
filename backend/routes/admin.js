@@ -18,7 +18,7 @@ router.get('/users', protect, adminOnly, async (req, res) => {
 router.get('/transactions', protect, adminOnly, async (req, res) => {
   try {
     const transactions = await Transaction.find()
-      .populate('userId', 'username email')
+      .populate('user._id', 'username email')
       .sort({ createdAt: -1 });
 
     res.json(transactions);
