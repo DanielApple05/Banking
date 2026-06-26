@@ -10,6 +10,7 @@ import TransferFailed from './assets/pages/transferFailed';
 import Transactions from './assets/pages/transactions';
 import Notifications from './assets/pages/notifications';
 import ProtectedRoute from './assets/components/protectedRoute';
+import AdminDashboard from './assets/pages/admin';
 
 
 
@@ -20,6 +21,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         {/* protected route */}
         <Route element={<ProtectedRoute />}></Route>
         <Route path="/dashboard" element={<Dashboard />} />
