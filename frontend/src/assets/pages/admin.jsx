@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/axios"
-import { signOut, getTransactionIcon } from "../../utils";
+import { signOut, getTransactionIcon, getFormatDate, getFormatTime } from "../../utils";
 
 
 const formatDate = (dateStr) =>
@@ -42,11 +42,11 @@ const AdminDashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
    useEffect(() => {
-    if (!storedUser.isAdmin) {
-      navigate('/dashboard'); // redirect non-admins
-    }else {
-      navigate('/admin');
+    if (!storedUser?.isAdmin) {
+      navigate('/dashboard');
+      return;
     }
+    fetchData();
   }, []);
 
   const fetchData = async () => {
