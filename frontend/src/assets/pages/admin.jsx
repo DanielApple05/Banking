@@ -17,21 +17,16 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/axios"
-import { signOut } from "../../utils";
+import { signOut, getTransactionIcon } from "../../utils";
+
 
 const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
   " • " + new Date(dateStr).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
-const getTransactionIcon = (category) => {
-  if (category === "Income")   return { icon: <ArrowDownToLine className="w-4 h-4 text-green-600" />, bg: "bg-green-100" };
-  if (category === "Transfer") return { icon: <ArrowUpRight className="w-4 h-4 text-blue-500" />,    bg: "bg-blue-100"  };
-  return { icon: <Landmark className="w-4 h-4 text-orange-400" />, bg: "bg-orange-100" };
-};
-
 
 const AdminDashboard = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -46,9 +41,9 @@ const AdminDashboard = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-useEffect(() => {
-  fetchData();
-}, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -166,10 +161,10 @@ useEffect(() => {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total Users",       value: totalUsers,                              color: "text-blue-600",  bg: "bg-blue-50",   icon: <Users className="w-5 h-5 text-blue-600" />           },
-            { label: "Platform Balance",  value: `₦${totalBalance.toLocaleString()}`,     color: "text-green-600", bg: "bg-green-50",  icon: <Landmark className="w-5 h-5 text-green-600" />       },
-            { label: "Total Transactions",value: totalTx,                                 color: "text-purple-600",bg: "bg-purple-50", icon: <Activity className="w-5 h-5 text-purple-600" />      },
-            { label: "Failed Transfers",  value: failedTx,                                color: "text-red-500",   bg: "bg-red-50",    icon: <AlertCircle className="w-5 h-5 text-red-500" />      },
+            { label: "Total Users", value: totalUsers, color: "text-blue-600", bg: "bg-blue-50", icon: <Users className="w-5 h-5 text-blue-600" /> },
+            { label: "Platform Balance", value: `₦${totalBalance.toLocaleString()}`, color: "text-green-600", bg: "bg-green-50", icon: <Landmark className="w-5 h-5 text-green-600" /> },
+            { label: "Total Transactions", value: totalTx, color: "text-purple-600", bg: "bg-purple-50", icon: <Activity className="w-5 h-5 text-purple-600" /> },
+            { label: "Failed Transfers", value: failedTx, color: "text-red-500", bg: "bg-red-50", icon: <AlertCircle className="w-5 h-5 text-red-500" /> },
           ].map((s) => (
             <div key={s.label} className="bg-white rounded-2xl shadow-sm px-5 py-4 flex items-center gap-4">
               <div className={`w-11 h-11 rounded-xl ${s.bg} flex items-center justify-center shrink-0`}>
