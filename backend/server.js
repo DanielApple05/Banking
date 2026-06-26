@@ -10,9 +10,7 @@ const app = express();
 
 // Middleware
 
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
-  : ['http://localhost:5173'];
+const allowedOrigins = process.env.CLIENT_URL.split(',').map(url => url.trim())
 
 app.use(
   cors({
