@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
 const transactionRoutes = require("./routes/transactions");
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require("./routes/admin");
 const app = express();
 
 // Middleware
