@@ -1,12 +1,13 @@
 // utils/getUserFromToken.js
 import { jwtDecode } from "jwt-decode";
 import { getToken } from "./helpers";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowDownToLine,
   ArrowUpRight,
   CreditCard,
   MoreHorizontal,
- 
+
 } from "lucide-react";
 
 export const getUserFromToken = () => {
@@ -28,12 +29,12 @@ export const getUserFromToken = () => {
   }
 };
 
-  export const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 14) return "Good afternoon";
-    return "Good evening";
-  };
+export const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 16) return "Good afternoon";
+  return "Good evening";
+};
 
 
 export const getTransactionIcon = (category) => {
