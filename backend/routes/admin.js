@@ -3,7 +3,7 @@ const router = express.Router();
 const protect = require('../middleware/auth');
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
-const adminOnly = require('../middleware/admin')
+const adminOnly = require('../middleware/admin');
 
 router.get('/users', protect, adminOnly, async (req, res) => {
   try {
@@ -18,7 +18,7 @@ router.get('/users', protect, adminOnly, async (req, res) => {
 router.get('/transactions', protect, adminOnly, async (req, res) => {
   try {
     const transactions = await Transaction.find()
-      .populate('user._id', 'username email')
+      .populate('userId', 'username email')
       .sort({ createdAt: -1 });
 
     res.json(transactions);

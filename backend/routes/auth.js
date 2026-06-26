@@ -53,6 +53,7 @@ router.post('/register', async (req, res) => {
         balance: user.balance,
         accountNumber: user.accountNumber,
         accountName: user.accountName,
+        isAdmin: user.isAdmin,
       },
     });
 
@@ -90,6 +91,7 @@ router.post('/login', async (req, res) => {
         balance: user.balance,
         accountNumber: user.accountNumber,
         accountName: user.accountName,
+        isAdmin: user.isAdmin,
       },
     });
 
