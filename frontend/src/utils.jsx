@@ -35,12 +35,6 @@ export const getUserFromToken = () => {
     return "Good evening";
   };
 
-//   export const getFormatDate = (dateStr) => {
-//   const date = new Date(dateStr);
-//   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-//     + ' • ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-// };
-
 
 export const getTransactionIcon = (category) => {
   if (category === "Income") return { icon: <ArrowDownToLine className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
@@ -61,3 +55,9 @@ export const getFormatTime = (value) =>
     hour: "2-digit",
     minute: "2-digit",
   });
+
+
+export const signOut = (navigate) => {
+  localStorage.clear();
+  navigate('/');
+};
