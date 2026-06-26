@@ -41,8 +41,12 @@ const AdminDashboard = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-  useEffect(() => {
-    fetchData();
+   useEffect(() => {
+    if (!storedUser.isAdmin) {
+      navigate('/dashboard'); // redirect non-admins
+    }else {
+      navigate('/admin');
+    }
   }, []);
 
   const fetchData = async () => {
@@ -232,7 +236,7 @@ const AdminDashboard = () => {
                     {/* Account number */}
                     <div className="hidden sm:block text-center">
                       <p className="text-xs text-gray-400">Account</p>
-                      <p className="text-sm font-semibold text-gray-700">**** {u.accountNumber?.slice(-4)}</p>
+                      <p className="text-sm font-semibold text-gray-700"> {u.accountNumber}</p>
                     </div>
                     {/* Balance */}
                     <div className="text-right">
