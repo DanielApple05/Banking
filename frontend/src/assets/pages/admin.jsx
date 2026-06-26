@@ -20,11 +20,6 @@ import API from "../../api/axios"
 import { signOut, getTransactionIcon, getFormatDate, getFormatTime } from "../../utils";
 
 
-const formatDate = (dateStr) =>
-  new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
-  " • " + new Date(dateStr).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-
-
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("users");
@@ -296,7 +291,7 @@ const AdminDashboard = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-900 truncate">{tx.title}</p>
-                        <p className="text-xs text-gray-400">{tx.userId?.username ?? "Unknown"} • {formatDate(tx.createdAt)}</p>
+                        <p className="text-xs text-gray-400">{tx.userId?.username ?? "Unknown"} • {getFormatDate(tx.createdAt)} • {getFormatTime(tx.createdAt) }</p>
                       </div>
                       <div className="hidden sm:block">
                         <span className="text-xs bg-gray-100 text-gray-500 font-semibold px-2 py-1 rounded-full">

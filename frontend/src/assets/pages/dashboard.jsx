@@ -26,6 +26,7 @@ import {
 }
   from "../../utils";
 import { getToken } from "../../helpers";
+import UserSideBar from "../components/userSideBar";
 
 const quickActions = [
   {
@@ -61,6 +62,7 @@ const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ sideBar, setSideBar]  = useState(false);
   const navigate = useNavigate();
 
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -120,10 +122,13 @@ const Dashboard = () => {
               <Bell className="w-6 h-6 text-gray-700" />
             </button>
             <button className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <User className="w-5 h-5 text-blue-500" onClick={() => signOut(navigate)} />
+              <User className="w-5 h-5 text-blue-500" onClick={() => setSideBar(!sideBar)} />
             </button>
           </div>
         </div>
+        {
+          sideBAr && <UserSideBar/>
+        }
 
         {/* Balance Card */}
         <div className="relative rounded-3xl overflow-hidden mb-7"
