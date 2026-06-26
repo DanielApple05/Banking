@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     balance: { type: Number, default: 4250.0 },
     accountNumber: { type: String, unique: true },
+    isAdmin: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

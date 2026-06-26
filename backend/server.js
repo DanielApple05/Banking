@@ -4,8 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
-const transactionRoutes = require("./routes/transactions");
-
+const transactionRoutes = require("./routes/transactions");const adminRoutes = require('./routes/admin');
 const app = express();
 
 // Middleware
@@ -29,8 +28,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/transactions", transactionRoutes);
-
+app.use("/api/transactions", transactionRoutes);app.use('/api/admin', adminRoutes);
 // Health check
 app.get("/", (req, res) => {
   res.json({ message: "SecureBank API is running" });
