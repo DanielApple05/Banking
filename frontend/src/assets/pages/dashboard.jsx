@@ -53,7 +53,7 @@ const navItems = [
   { label: "Home", icon: Home, path: "/dashboard" },
   { label: "Transactions", icon: List, path: "/transactions" },
   { label: "Transfer", icon: RefreshCw, path: "/transfer" },
-  { label: "Profile", icon: User, path: "/dashboard" },
+  { label: "Profile", icon: User, path: "/profile" },
 ];
 
 const Dashboard = () => {
