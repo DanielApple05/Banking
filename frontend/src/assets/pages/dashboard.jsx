@@ -62,7 +62,7 @@ const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ sideBar, setSideBar]  = useState(false);
+  const [sideBar, setSideBar] = useState(false);
   const navigate = useNavigate();
 
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -109,7 +109,7 @@ const Dashboard = () => {
       <div className="flex-1 overflow-y-auto pb-24 px-5 pt-6">
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-6 ">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
               Hello, {storedUser.username.split(' ')[0]
@@ -126,12 +126,13 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
+
         {
-          sideBAr && <UserSideBar/>
+          sideBar && <UserSideBar />
         }
 
         {/* Balance Card */}
-        <div className="relative rounded-3xl overflow-hidden mb-7"
+        <div className="rounded-3xl overflow-hidden mb-7"
           style={{ background: "linear-gradient(135deg, #3b5bdb 0%, #4c6ef5 60%, #748ffc 100%)" }}>
           {/* Wave decoration */}
           <svg className="absolute bottom-0 left-0 w-full opacity-20" viewBox="0 0 400 80" preserveAspectRatio="none">
@@ -142,7 +143,7 @@ const Dashboard = () => {
             <Landmark className="w-20 h-20 text-white" />
           </div>
 
-          <div className="relative z-10 p-6">
+          <div className=" p-6">
             <div className="flex justify-between items-start">
               {/* Left: balance */}
               <div>
