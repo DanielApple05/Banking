@@ -28,13 +28,24 @@ router.post('/transfer', protect, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (sender.balance < amount) {
-      // Log failed transaction
+    if (!recipientAccount) {
+      return res.status(400).json({ message: 'Recipient account is required' });
+    }
+
+    const recipient = await User.findOne({ accountNumber: recipientAccount });
+
+    if (!recipient) {
+      return res.status(404).json({ message: 'Recipient account not found' });
+    }
+
+    const transferAmount = Number(amount);
+
+    if (sender.balance < transferAmount) {
       await Transaction.create({
         userId: sender._id,
         title: `Transfer to ${recipientAccount}`,
         category: 'Transfer',
-        amount,
+        amount: transferAmount,
         type: 'debit',
         status: 'Failed',
         recipient: recipientAccount,
@@ -45,16 +56,16 @@ router.post('/transfer', protect, async (req, res) => {
       return res.status(400).json({ message: 'Insufficient funds' });
     }
 
-    // Deduct balance
-    sender.balance -= Number(amount);
+    sender.balance -= transferAmount;
+    recipient.balance += transferAmount;
     await sender.save();
+    await recipient.save();
 
-    // Log successful transaction
     const transaction = await Transaction.create({
       userId: sender._id,
       title: `Transfer to ${recipientAccount}`,
       category: 'Transfer',
-      amount,
+      amount: transferAmount,
       type: 'debit',
       status: 'Successful',
       recipient: recipientAccount,
