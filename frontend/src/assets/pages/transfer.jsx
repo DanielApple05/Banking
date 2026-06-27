@@ -119,7 +119,7 @@ const Transfer = () => {
       setLookupLoading(true);
       try {
         const res = await lookupAccount(accountNumber);
-        setResolvedName(res.data.username);
+        setResolvedName(res.data.accountName);
       } catch (err) {
         setResolvedName('');
       } finally {
@@ -229,7 +229,7 @@ const Transfer = () => {
         {resolvedName && !lookupLoading && (
           <p className="text-xs text-green-600 font-semibold mb-5 pl-1">✓ {resolvedName}</p>
         )}
-        {!resolvedName && !lookupLoading && accountNumber.length > 10 && (
+        {!resolvedName && !lookupLoading && accountNumber.length >= 10 && (
           <p className="text-xs text-red-400 mb-5 pl-1">Account not found</p>
         )}
 
