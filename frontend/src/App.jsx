@@ -11,12 +11,9 @@ import Transactions from './assets/pages/transactions';
 import Notifications from './assets/pages/notifications';
 import ProtectedRoute from './assets/components/protectedRoute';
 import AdminDashboard from './assets/pages/admin';
-
-
+import Profile from './assets/pages/profile';
 
 function App() {
-
-
   return (
     <>
       <Routes>
@@ -32,6 +29,7 @@ function App() {
         <Route path="/transfer-failed" element={<TransferFailed />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/profile" element={<Profile />} /> 
         <Route />
       </Routes>
     </>

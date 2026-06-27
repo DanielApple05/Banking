@@ -7,38 +7,36 @@ import {
 import { useNavigate } from "react-router-dom";
 import { signOut } from "../../utils";
 
-const Profile 
-= () => {
+const Profile
+  = () => {
 
-  const navigate = useNavigate();
-  const [showAccount, setShowAccount] = useState(false);
-  const [activeNav, setActiveNav] = useState("Profile");
+    const navigate = useNavigate();
+    const [showAccount, setShowAccount] = useState(false);
+    const [activeNav, setActiveNav] = useState("Profile");
 
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const firstName = storedUser.username?.split(" ")[0] || "User";
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const firstName = storedUser.username?.split(" ")[0] || "User";
 
-  const menuItems = [
-    {
-      section: "Account",
-      items: [
-        { label: "Personal Information", icon: <User className="w-4 h-4 text-blue-500" />, bg: "bg-blue-50", path: null },
-        { label: "Notifications", icon: <Bell className="w-4 h-4 text-purple-500" />, bg: "bg-purple-50", path: "/notifications" },
-        { label: "Security & Password", icon: <Lock className="w-4 h-4 text-orange-500" />, bg: "bg-orange-50", path: null },
-      ],
-    },
-    {
-      section: "Support",
-      items: [
-        { label: "Help Center", icon: <HelpCircle className="w-4 h-4 text-green-500" />, bg: "bg-green-50", path: null },
-        { label: "Terms & Privacy", icon: <FileText className="w-4 h-4 text-gray-400" />, bg: "bg-gray-100", path: null },
-      ],
-    },
-  ];
-  return (
-    <>
-      <div className="absolute top-0 right-0 bg-black/90 backdrop-blur-md p-4  min-h-screen  w-full flex text-white">
-        <div className="flex-1 overflow-y-auto pb-24">
-
+    const menuItems = [
+      {
+        section: "Account",
+        items: [
+          { label: "Personal Information", icon: <User className="w-4 h-4 text-blue-500" />, bg: "bg-blue-50", path: null },
+          { label: "Notifications", icon: <Bell className="w-4 h-4 text-purple-500" />, bg: "bg-purple-50", path: "/notifications" },
+          { label: "Security & Password", icon: <Lock className="w-4 h-4 text-orange-500" />, bg: "bg-orange-50", path: null },
+        ],
+      },
+      {
+        section: "Support",
+        items: [
+          { label: "Help Center", icon: <HelpCircle className="w-4 h-4 text-green-500" />, bg: "bg-green-50", path: null },
+          { label: "Terms & Privacy", icon: <FileText className="w-4 h-4 text-gray-400" />, bg: "bg-gray-100", path: null },
+        ],
+      },
+    ];
+    return (
+      <>
+        <div className=" bg-black/90 backdrop-blur-md p-4 min-h-screen max-w-md mx-auto flex text-white overflow-y-auto flex-col ">
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-6 pb-4">
             <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100 transition">
@@ -124,7 +122,7 @@ const Profile
           </div>
 
           {/* Menu Sections */}
-          <div className="px-5 flex flex-col gap-5">
+          <div className="px-5 flex flex-col gap-5 mb-10">
             {menuItems.map((section) => (
               <div key={section.section}>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 pl-1">
@@ -157,9 +155,8 @@ const Profile
             </button>
           </div>
         </div>
-      </div>
-    </>
-  );
-}
+      </>
+    );
+  }
 
 export default Profile;
