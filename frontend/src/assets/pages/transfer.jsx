@@ -13,8 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getBalance, lookupAccount } from "../../api/transactions";
-
+import { getBalance, lookupAccount, } from "../../api/transactions";
+import { getInitials } from "../../utils";
 
 const banks = ["SecureBank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
@@ -53,6 +53,27 @@ const Transfer = () => {
     fetchBalance();
   }, []);
 
+  useEffect(() => {
+    const lookup = async () => {
+      if (accountNumber.length < 10) {
+        setResolvedName('');
+        return;
+      }
+      setLookupLoading(true);
+      try {
+        const res = await lookupAccount(accountNumber);
+        setResolvedName(res.data.accountName);
+        setError('')
+      } catch (err) {
+        setResolvedName('');
+      } finally {
+        setLookupLoading(false);
+      }
+    };
+    const delay = setTimeout(lookup, 600); // debounce — waits 600ms after typing stops
+    return () => clearTimeout(delay);
+  }, [accountNumber]);
+
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -62,6 +83,7 @@ const Transfer = () => {
     if (!selectedBank) return setError('Please select a bank.');
     if (!amount || Number(amount) <= 0) return setError('Please enter a valid amount.');
     if (Number(amount) > availableBalance) return setError('Insufficient balance.');
+    if ( resolvedName === '') return setError('invalid account');
 
     setLoading(true);
     try {
@@ -69,11 +91,11 @@ const Transfer = () => {
       const existing = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const alreadyExists = existing.find((b) => b.account === accountNumber);
       if (!alreadyExists) {
-        const beneficiaryName = accountName || resolvedName || selectedBeneficiary || 'Unknown';
+        const beneficiaryName = resolvedName || selectedBeneficiary || 'Unknown';
         const newBeneficiary = {
           id: Date.now(),
           name: beneficiaryName,
-          initials: beneficiaryName.trim().slice(0, 2).toUpperCase(),
+          initials: getInitials(beneficiaryName),
           account: accountNumber,
           bank: "SecureBank",
           bg: "bg-blue-100",
@@ -110,25 +132,7 @@ const Transfer = () => {
     setShowBeneficiaryDrop(false);
   };
 
-  useEffect(() => {
-    const lookup = async () => {
-      if (accountNumber.length < 10) {
-        setResolvedName('');
-        return;
-      }
-      setLookupLoading(true);
-      try {
-        const res = await lookupAccount(accountNumber);
-        setResolvedName(res.data.accountName);
-      } catch (err) {
-        setResolvedName('');
-      } finally {
-        setLookupLoading(false);
-      }
-    };
-    const delay = setTimeout(lookup, 600); // debounce — waits 600ms after typing stops
-    return () => clearTimeout(delay);
-  }, [accountNumber]);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">

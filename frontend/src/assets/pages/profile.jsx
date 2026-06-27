@@ -5,7 +5,7 @@ import {
   Eye, EyeOff, Home, List, RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { signOut, getMaskEmail } from "../../utils";
+import { signOut, getMaskEmail, getInitials } from "../../utils";
 import { getBalance } from "../../api/transactions";
 import { getToken } from "../../helpers";
 
@@ -18,7 +18,7 @@ const Profile
     const [loading, setLoading] = useState(true);
 
     const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const firstName = storedUser.username?.split(" ")[0] || "User";
+  
 
 
     useEffect(() => {
@@ -87,10 +87,9 @@ const Profile
           {/* Avatar + Name */}
           <div className="flex flex-col items-center px-5 pb-6">
             <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-extrabold mb-3 shadow-lg">
-              {firstName.slice(0, 2).toUpperCase()}
+            {getInitials(storedUser.username)}
             </div>
             <h2 className="text-xl font-extrabold text-gray-400">{storedUser.username || "User"}</h2>
-            {/* <p className="text-sm text-gray-400 mt-0.5">{storedUser.email || ""}</p> */}
 
             {/* Verified badge */}
             <div className="flex items-center gap-1.5 mt-2 bg-green-50 px-3 py-1 rounded-full">

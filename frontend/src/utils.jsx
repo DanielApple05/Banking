@@ -71,3 +71,15 @@ export const signOut = (navigate) => {
     const domain = email.substring(atIndex + 1);
     return `${name.slice(0, 3)}***@${domain}`;
   };
+
+ export  const getInitials = (value = "") => {
+  const name = String(value || "").trim();
+  if (!name) return "?";
+
+  const parts = name.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+};
