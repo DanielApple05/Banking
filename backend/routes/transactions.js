@@ -18,7 +18,7 @@ router.get('/', protect, async (req, res) => {
 
 // POST /api/transactions/transfer — send money
 router.post('/transfer', protect, async (req, res) => {
-  const { recipientAccount, bank, amount, narration } = req.body;
+  const { recipientAccount, bank, amount, narration, type } = req.body;
 
   try {
     const sender = await User.findById(req.user.id);
