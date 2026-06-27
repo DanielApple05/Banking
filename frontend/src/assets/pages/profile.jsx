@@ -110,7 +110,7 @@ const Profile
               { label: "Username", value: storedUser.username, icon: <User className="w-4 h-4 text-blue-500" /> },
               { label: "Email", value: getMaskEmail(storedUser.email), icon: <Mail className="w-4 h-4 text-blue-500" /> },
               { label: "Account", value: storedUser.accountNumber, icon: <CreditCard className="w-4 h-4 text-blue-500" />  },
-              { label: "Bank", value: "SecureBank", icon: <Landmark className="w-4 h-4 text-blue-500" /> },
+              { label: "Bank", value: storedUser.bank, icon: <Landmark className="w-4 h-4 text-blue-500" /> },
             ].map((item) => (
               <div key={item.label} className="bg-white rounded-2xl px-4 py-3 shadow-sm">
                 <div className="flex items-center gap-2 mb-1">
