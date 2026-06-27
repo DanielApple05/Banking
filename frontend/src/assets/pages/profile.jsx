@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft, User, Mail, CreditCard, Landmark, ShieldCheck,
   LogOut, ChevronRight, Bell, Lock, HelpCircle, FileText,
@@ -6,17 +6,54 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { signOut, getMaskEmail } from "../../utils";
+import { getBalance } from "../../api/transactions";
+import { getToken } from "../../helpers";
 
 const Profile
   = () => {
 
     const navigate = useNavigate();
     const [showAccount, setShowAccount] = useState(false);
-    const [activeNav, setActiveNav] = useState("Profile");
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-    console.log(storedUser.bank)
     const firstName = storedUser.username?.split(" ")[0] || "User";
+
+
+    useEffect(() => {
+      const token = getToken();
+
+      const fetchData = async () => {
+        try {
+          const [balanceRes] = await Promise.all([
+            getBalance(),
+          ]);
+          setUserData(balanceRes.data);
+        } catch (err) {
+          console.error('Failed to fetch profile:', err);
+          if (err.response?.status === 401) {
+            localStorage.clear();
+            navigate('/');
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }, [navigate]);
+
+    if (loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 max-w-md mx-auto">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-gray-400 font-medium">Loading your profile...</p>
+          </div>
+        </div>
+      );
+    }
 
     const menuItems = [
       {
@@ -76,28 +113,31 @@ const Profile
               </div>
 
               <div className="relative z-10">
-                <p className="text-blue-200 text-xs font-medium mb-1">Account Name</p>
-                <p className="text-white font-bold text-base mb-4">{storedUser.accountName || storedUser.username}</p>
-
-                <div className="flex justify-between items-end">
+                <div className="flex justify-between">
+                  <div>
+                    <p className="text-blue-200 text-xs font-medium mb-1">Account Name</p>
+                    <p className="text-white font-bold text-base mb-4">{storedUser.accountName || storedUser.username}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-blue-200 text-xs font-medium mb-1">Balance</p>
+                    <p className="text-white font-extrabold text-lg">
+                      ₦{userData?.balance?.toLocaleString() ?? "0"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-between ">
                   <div>
                     <p className="text-blue-200 text-xs font-medium mb-1">Account Number</p>
                     <div className="flex items-center gap-2">
                       <p className="text-white font-bold tracking-widest text-sm">
                         {showAccount
                           ? storedUser.accountNumber
-                          : `**** **** **** ${storedUser.accountNumber?.slice(-4) ?? "----"}`}
+                          : `**** **** **** ${userData?.accountNumber?.slice(-4) ?? "----"}`}
                       </p>
                       <button onClick={() => setShowAccount(!showAccount)} className="text-blue-200 hover:text-white transition">
                         {showAccount ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-blue-200 text-xs font-medium mb-1">Balance</p>
-                    <p className="text-white font-extrabold text-lg">
-                      ₦{storedUser.balance?.toLocaleString() ?? "0"}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -109,7 +149,7 @@ const Profile
             {[
               { label: "Username", value: storedUser.username, icon: <User className="w-4 h-4 text-blue-500" /> },
               { label: "Email", value: getMaskEmail(storedUser.email), icon: <Mail className="w-4 h-4 text-blue-500" /> },
-              { label: "Account", value: storedUser.accountNumber, icon: <CreditCard className="w-4 h-4 text-blue-500" />  },
+              { label: "Account", value: storedUser.accountNumber, icon: <CreditCard className="w-4 h-4 text-blue-500" /> },
               { label: "Bank", value: storedUser.bank, icon: <Landmark className="w-4 h-4 text-blue-500" /> },
             ].map((item) => (
               <div key={item.label} className="bg-white rounded-2xl px-4 py-3 shadow-sm">
