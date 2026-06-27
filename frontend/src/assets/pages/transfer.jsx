@@ -16,15 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { getBalance, lookupAccount } from "../../api/transactions";
 
 
-const banks = ["First National Bank", "Zenith Bank PLC", "City Bank", "Union Bank", "Heritage Bank", "Metro Bank"];
+const banks = ["SecureBank"];
 const currencies = ["USD", "EUR", "GBP", "NGN"];
 
-// const getFirstTwoLetters = (name = "") => {
-//   return String(name)
-//     .trim()
-//     .slice(0, 2)
-//     .toUpperCase();
-// };
 
 const Transfer = () => {
   const navigate = useNavigate();
@@ -112,6 +106,7 @@ const Transfer = () => {
     const selectBeneficiary = (b) => {
     setSelectedBeneficiary(b.name);
     setAccountNumber(b.account);
+    setSelectedBank(b.bank)
     setShowBeneficiaryDrop(false);
   };
 
