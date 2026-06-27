@@ -93,6 +93,7 @@ router.post('/login', async (req, res) => {
         accountNumber: user.accountNumber,
         accountName: user.accountName,
         isAdmin: user.isAdmin,
+        bank: "SecureBank",
       },
     });
 
