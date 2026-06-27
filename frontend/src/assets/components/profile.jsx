@@ -7,7 +7,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { signOut } from "../../utils";
 
-const UserSideBar = () => {
+const Profile 
+= () => {
 
   const navigate = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
@@ -161,4 +162,4 @@ const UserSideBar = () => {
   );
 }
 
-export default UserSideBar;
+export default Profile;

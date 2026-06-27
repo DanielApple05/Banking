@@ -26,7 +26,7 @@ import {
 }
   from "../../utils";
 import { getToken } from "../../helpers";
-import UserSideBar from "../components/userSideBar";
+import Profile from "../components/profile";
 
 const quickActions = [
   {
@@ -128,7 +128,7 @@ const Dashboard = () => {
         </div>
 
         {
-          sideBar && <UserSideBar />
+          sideBar && <Profile />
         }
 
         {/* Balance Card */}
