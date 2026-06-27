@@ -69,7 +69,7 @@ const Transfer = () => {
       const existing = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const alreadyExists = existing.find((b) => b.account === accountNumber);
       if (!alreadyExists) {
-        const beneficiaryName = resolvedName || selectedBeneficiary || 'Unknown';
+        const beneficiaryName = accountName || resolvedName || selectedBeneficiary || 'Unknown';
         const newBeneficiary = {
           id: Date.now(),
           name: beneficiaryName,
@@ -103,7 +103,7 @@ const Transfer = () => {
     }
   };
 
-    const selectBeneficiary = (b) => {
+  const selectBeneficiary = (b) => {
     setSelectedBeneficiary(b.name);
     setAccountNumber(b.account);
     setSelectedBank(b.bank)
@@ -126,7 +126,6 @@ const Transfer = () => {
         setLookupLoading(false);
       }
     };
-
     const delay = setTimeout(lookup, 600); // debounce — waits 600ms after typing stops
     return () => clearTimeout(delay);
   }, [accountNumber]);
