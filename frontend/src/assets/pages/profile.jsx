@@ -5,7 +5,7 @@ import {
   Eye, EyeOff, Home, List, RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "../../utils";
+import { signOut, getMaskEmail } from "../../utils";
 
 const Profile
   = () => {
@@ -15,6 +15,7 @@ const Profile
     const [activeNav, setActiveNav] = useState("Profile");
 
     const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    console.log(storedUser.bank)
     const firstName = storedUser.username?.split(" ")[0] || "User";
 
     const menuItems = [
@@ -42,7 +43,7 @@ const Profile
             <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100 transition">
               <ArrowLeft className="w-5 h-5 text-gray-800" />
             </button>
-            <h1 className="text-lg font-extrabold text-gray-900">My Profile</h1>
+            <h1 className="text-lg font-extrabold text-gray-300">My Profile</h1>
             <div className="w-9" />
           </div>
 
@@ -51,8 +52,8 @@ const Profile
             <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-extrabold mb-3 shadow-lg">
               {firstName.slice(0, 2).toUpperCase()}
             </div>
-            <h2 className="text-xl font-extrabold text-gray-900">{storedUser.username || "User"}</h2>
-            <p className="text-sm text-gray-400 mt-0.5">{storedUser.email || ""}</p>
+            <h2 className="text-xl font-extrabold text-gray-400">{storedUser.username || "User"}</h2>
+            {/* <p className="text-sm text-gray-400 mt-0.5">{storedUser.email || ""}</p> */}
 
             {/* Verified badge */}
             <div className="flex items-center gap-1.5 mt-2 bg-green-50 px-3 py-1 rounded-full">
@@ -107,8 +108,8 @@ const Profile
           <div className="mx-5 grid grid-cols-2 gap-3 mb-6">
             {[
               { label: "Username", value: storedUser.username, icon: <User className="w-4 h-4 text-blue-500" /> },
-              { label: "Email", value: storedUser.email, icon: <Mail className="w-4 h-4 text-blue-500" /> },
-              { label: "Account", value: `**** ${storedUser.accountNumber?.slice(-4)}`, icon: <CreditCard className="w-4 h-4 text-blue-500" /> },
+              { label: "Email", value: getMaskEmail(storedUser.email), icon: <Mail className="w-4 h-4 text-blue-500" /> },
+              { label: "Account", value: storedUser.accountNumber, icon: <CreditCard className="w-4 h-4 text-blue-500" />  },
               { label: "Bank", value: "SecureBank", icon: <Landmark className="w-4 h-4 text-blue-500" /> },
             ].map((item) => (
               <div key={item.label} className="bg-white rounded-2xl px-4 py-3 shadow-sm">
@@ -116,7 +117,7 @@ const Profile
                   {item.icon}
                   <p className="text-xs text-gray-400">{item.label}</p>
                 </div>
-                <p className="text-sm font-bold text-gray-900 truncate">{item.value}</p>
+                <p className="text-sm font-bold text-gray-900 truncate" >{item.value}</p>
               </div>
             ))}
           </div>

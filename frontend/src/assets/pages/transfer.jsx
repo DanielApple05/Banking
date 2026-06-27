@@ -81,6 +81,7 @@ const Transfer = () => {
           name: beneficiaryName,
           initials: beneficiaryName.trim().slice(0, 2).toUpperCase(),
           account: accountNumber,
+          bank: "SecureBank",
           bg: "bg-blue-100",
           text: "text-blue-700",
         };

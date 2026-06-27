@@ -62,3 +62,12 @@ export const signOut = (navigate) => {
   localStorage.clear();
   navigate('/');
 };
+
+ export const getMaskEmail = (email) => {
+    if (!email) return '';
+    const atIndex = email.indexOf('@');
+    if (atIndex === -1) return email;
+    const name = email.substring(0, atIndex);
+    const domain = email.substring(atIndex + 1);
+    return `${name.slice(0, 3)}***@${domain}`;
+  };

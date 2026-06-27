@@ -54,6 +54,7 @@ router.post('/register', async (req, res) => {
         accountNumber: user.accountNumber,
         accountName: user.accountName,
         isAdmin: user.isAdmin,
+        bank: "SecureBank",
       },
     });
 
