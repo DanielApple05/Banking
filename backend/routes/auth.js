@@ -23,6 +23,11 @@ router.post('/register', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
+    // Validate required fields exist
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
@@ -40,7 +45,7 @@ router.post('/register', async (req, res) => {
       email: email.toLowerCase(),
       password: hashedPassword,
       accountNumber: generateAccountNumber(),
-      accountName: `${firstName} ${lastName}`.trim(), 
+      accountName: `${firstName.trim()} ${lastName.trim()}`.trim(), 
     });
 
     const token = generateToken(user);
@@ -62,7 +67,7 @@ router.post('/register', async (req, res) => {
 
   } catch (err) {
     console.error('Register error:', err.message);
-    res.status(500).json({ message: err.message || 'Server error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
