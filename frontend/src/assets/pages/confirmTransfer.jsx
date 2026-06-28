@@ -52,7 +52,7 @@ const ConfirmTransfer = () => {
 
     const pinCode = pin.join("");
     if (pinCode.length !== 4) return;
-    
+
     setLoading(true);
     setError("");
 
@@ -69,9 +69,25 @@ const ConfirmTransfer = () => {
         navigate("/transfer-success", { state: { transaction: response.data.transaction } });
       }
     } catch (err) {
-      console.error("Transfer error:", err);
-      setError(err.response?.data?.message || "Transfer failed. Please try again.");
-      navigate("/transfer-failed");
+      const message = err.response?.data?.message || "Transfer failed. Please try again.";
+      const status = err.response?.status;
+
+      if (status === 401) {
+        // Wrong PIN or PIN not set — stay on page
+        setError(message);
+        setPin(["", "", "", ""]);
+        inputRefs[0].current.focus();
+      } else {
+        // Insufficient funds or other error — go to failed page
+        navigate("/transfer-failed", {
+          state: {
+            amount,
+            recipient,
+            bank,
+            reason: message,
+          }
+        });
+      }
     } finally {
       setLoading(false);
     }
