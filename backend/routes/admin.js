@@ -18,7 +18,7 @@ router.get('/users', protect, adminOnly, async (req, res) => {
 router.get('/transactions', protect, adminOnly, async (req, res) => {
   try {
     const transactions = await Transaction.find()
-      .populate('userId', 'username email')
+      .populate('userId', 'accountName email')
       .sort({ createdAt: -1 });
 
     res.json(transactions);
@@ -42,7 +42,7 @@ router.patch('/users/:id/credit', protect, adminOnly, async (req, res) => {
 
     const transaction = await Transaction.create({
       userId: user._id,
-      title: `Admin credit to ${user.username}`,
+      title: `Admin credit to ${user.accountName}`,
       category: 'Income',
       amount: Number(amount),
       type: 'credit',
