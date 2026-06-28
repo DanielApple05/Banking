@@ -117,7 +117,7 @@ const SecurityAndPrivacy = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
+    <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto p-5">
 
       <h1 className="text-3xl font-bold mb-6">
         Privacy & Security
