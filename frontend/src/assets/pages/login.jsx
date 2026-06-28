@@ -122,7 +122,7 @@ const Login = () => {
             </div>
           )}
 
-           {notUser && (
+          {notUser && (
             <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3 gap-3 bg-white focus-within:border-blue-500 transition">
               <FontAwesomeIcon icon={faUser} className="text-gray-400" />
               <input
