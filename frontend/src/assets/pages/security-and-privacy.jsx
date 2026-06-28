@@ -61,6 +61,7 @@ const handleSetPin = async (e) => {
     );
   } finally {
     setLoading(false);
+     setMessage("");
   }
 };
 

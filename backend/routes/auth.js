@@ -144,7 +144,7 @@ router.post('/set-pin', protect, async (req, res) => {
     }
 
     // Prevent overwriting existing pin
-    if (user.pin) {
+    if (pin === user.pin) {
       return res.status(400).json({
         message: 'PIN already exists. Use reset PIN instead.'
       });
