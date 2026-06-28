@@ -65,6 +65,7 @@ router.post('/register', async (req, res) => {
         accountName: user.accountName,
         isAdmin: user.isAdmin,
         bank: "SecureBank",
+        pin: "",
       },
     });
 
