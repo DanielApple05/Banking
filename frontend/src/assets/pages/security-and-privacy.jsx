@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { setNewPin } from "../../api/auth";
 
 const SecurityAndPrivacy = () => {
 
@@ -24,33 +25,44 @@ const SecurityAndPrivacy = () => {
   const [loading, setLoading] = useState(false);
 
 
-  // SET PIN
-  const handleSetPin = async (e) => {
-    e.preventDefault();
+// SET PIN
+const handleSetPin = async (e) => {
+  e.preventDefault();
+  
+  // Validate PINs match
+  if (setPinData.pin !== setPinData.confirmPin) {
+    return setMessage("PINs do not match");
+  }
+  
+  // Validate PIN is 4 digits
+  if (!/^\d{4}$/.test(setPinData.pin)) {
+    return setMessage("PIN must be exactly 4 digits");
+  }
+  
+  // Check if PIN already exists
+  if (storedUser.pin) {
+    return setMessage("PIN already exists. Please reset PIN instead");
+  }
+
+  try {
+    setLoading(true);
+    setMessage("");
     
-    if (setPinData.pin !== setPinData.confirmPin) {
-      return setMessage("PINs do not match");
-    } 
-    if ( storedUser.pin !== "") {
-      return setMessage("Please reset your password")
-    }
+    // Send the correct PIN data
+    const res = await setNewPin({
+      pin: setPinData.pin
+    });
 
-    try {
-      setLoading(true);
-      setMessage("")
-      const res = await setNewPin(
-        pin === storedUser.pin
-      )
-
-      setMessage(res.data.message);
-    } catch (err) {
-      setMessage(
-        err.response?.data?.message || "Unable to set PIN"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setMessage(res.data.message);
+    setSetPinData({ pin: "", confirmPin: "" }); // Clear form
+  } catch (err) {
+    setMessage(
+      err.response?.data?.message || "Unable to set PIN"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   // RESET PIN
   const handleResetPin = async (e) => {
