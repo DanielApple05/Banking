@@ -115,7 +115,7 @@ const Login = () => {
                 type="text"
                 placeholder="First Name"
                 required
-                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
                 value={form.firstname}
                 onChange={handleChange("firstname")}
               />
@@ -129,7 +129,7 @@ const Login = () => {
                 type="text"
                 placeholder="Last Name"
                 required
-                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
                 value={form.lastname}
                 onChange={handleChange("lastname")}
               />
@@ -142,7 +142,7 @@ const Login = () => {
               type="email"
               placeholder="Email"
               required
-              className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+              className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
               value={form.email}
               onChange={handleChange("email")}
             />
@@ -154,7 +154,7 @@ const Login = () => {
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               required
-              className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+              className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
               value={form.password}
               onChange={handleChange("password")}
             />
@@ -170,7 +170,7 @@ const Login = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm Password"
                 required
-                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
                 value={form.confirmPassword}
                 onChange={handleChange("confirmPassword")}
               />
@@ -189,7 +189,7 @@ const Login = () => {
                   onChange={() => setRememberMe(!rememberMe)}
                   className="w-4 h-4 accent-blue-600 rounded"
                 />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className=" text-gray-600">Remember me</span>
               </label>
               <a href="#" className="text-sm text-blue-600 font-medium hover:underline">Forgot Password?</a>
             </div>

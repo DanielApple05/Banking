@@ -218,7 +218,7 @@ const Transfer = () => {
           <input
             type="text"
             placeholder="Enter Account Number"
-            className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+            className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value)}
           />
@@ -275,7 +275,7 @@ const Transfer = () => {
           <input
             type="number"
             placeholder="Enter Amount"
-            className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+            className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -317,7 +317,7 @@ const Transfer = () => {
             placeholder="What's this for?"
             maxLength={50}
             rows={2}
-            className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent resize-none"
+            className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent resize-none"
             value={narration}
             onChange={(e) => setNarration(e.target.value)}
           />
