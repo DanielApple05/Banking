@@ -58,6 +58,10 @@ const SecurityAndPrivacy = () => {
       );
     } finally {
       setLoading(false);
+      setSetPinData({
+        pin: "",
+        confirmPin: "",
+      });
     }
   };
 
@@ -143,7 +147,7 @@ const SecurityAndPrivacy = () => {
         <form onSubmit={handleSetPin}>
           <div className=" relative flex justify-between">
             <input
-              type={viewNewPin ?  "text" : "password"}
+              type={viewNewPin ? "text" : "password"}
               maxLength="4"
               placeholder="Enter PIN"
               className="w-full border p-2 mb-3 flex-1"
@@ -155,12 +159,12 @@ const SecurityAndPrivacy = () => {
               }
             />
             <div className="absolute right-5  top-2 z-10 " onClick={() => setViewNewPin(!viewNewPin)}>
-              { viewNewPin ? <Eye /> : <EyeClosed />}
+              {viewNewPin ? <Eye /> : <EyeClosed />}
             </div>
           </div>
 
           <input
-            type={viewNewPin ?  "text" : "password"}
+            type={viewNewPin ? "text" : "password"}
             maxLength="4"
             placeholder="Confirm PIN"
             className="w-full border p-2 mb-3"
