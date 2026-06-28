@@ -66,7 +66,7 @@ const AdminDashboard = () => {
     setError("");
     try {
       await API.patch(`/admin/users/${creditModal.userId}/credit`, { amount: Number(creditAmount) });
-      setSuccess(`₦${Number(creditAmount).toLocaleString()} credited to ${creditModal.username}`);
+      setSuccess(`₦${Number(creditAmount).toLocaleString()} credited to ${creditModal.accountName}`);
       setCreditModal(null);
       setCreditAmount("");
       fetchData();
@@ -89,13 +89,13 @@ const AdminDashboard = () => {
   };
 
   const filteredUsers = users.filter((u) =>
-    u.username.toLowerCase().includes(search.toLowerCase()) ||
+    u.accountName.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredTx = transactions.filter((tx) =>
     tx.title.toLowerCase().includes(search.toLowerCase()) ||
-    tx.userId?.username?.toLowerCase().includes(search.toLowerCase())
+    tx.userId?.accountName?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Summary stats
@@ -127,7 +127,7 @@ const AdminDashboard = () => {
             </div>
             <div>
               <h1 className="text-base font-extrabold text-gray-900">SecureBank Admin</h1>
-              <p className="text-xs text-gray-400">Welcome, {storedUser.username}</p>
+              <p className="text-xs text-gray-400">Welcome, {storedUser.accountName}</p>
             </div>
           </div>
           <button
@@ -221,11 +221,11 @@ const AdminDashboard = () => {
                   <div key={u._id} className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition">
                     {/* Avatar */}
                     <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold shrink-0">
-                      {u.username.slice(0, 2).toUpperCase()}
+                      {u.accountName.slice(0, 2).toUpperCase()}
                     </div>
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-gray-900">{u.username}</p>
+                      <p className="text-sm font-bold text-gray-900">{u.accountName}</p>
                       <p className="text-xs text-gray-400">{u.email}</p>
                     </div>
                     {/* Account number */}
@@ -247,7 +247,7 @@ const AdminDashboard = () => {
                     {/* Actions */}
                     <div className="flex items-center gap-2 shrink-0">
                       <button
-                        onClick={() => { setCreditModal({ userId: u._id, username: u.username }); setError(""); }}
+                        onClick={() => { setCreditModal({ userId: u._id, accountName: u.accountName }); setError(""); }}
                         className="flex items-center gap-1 text-xs bg-green-50 text-green-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-green-100 transition"
                       >
                         <PlusCircle className="w-3.5 h-3.5" /> Credit
@@ -291,7 +291,7 @@ const AdminDashboard = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-900 truncate">{tx.title}</p>
-                        <p className="text-xs text-gray-400">{tx.userId?.username ?? "Unknown"} • {getFormatDate(tx.createdAt)} • {getFormatTime(tx.createdAt) }</p>
+                        <p className="text-xs text-gray-400">{tx.userId?.accountName ?? "Unknown"} • {getFormatDate(tx.createdAt)} • {getFormatTime(tx.createdAt) }</p>
                       </div>
                       <div className="hidden sm:block">
                         <span className="text-xs bg-gray-100 text-gray-500 font-semibold px-2 py-1 rounded-full">
@@ -326,7 +326,7 @@ const AdminDashboard = () => {
               </button>
             </div>
             <p className="text-sm text-gray-400 mb-4">
-              Adding funds to <span className="font-bold text-gray-900">{creditModal.username}</span>
+              Adding funds to <span className="font-bold text-gray-900">{creditModal.accountName}</span>
             </p>
             {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
             <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3 focus-within:border-blue-500 transition mb-4">
@@ -365,7 +365,7 @@ const AdminDashboard = () => {
             <div className="bg-red-50 rounded-xl px-4 py-3 mb-4 flex items-start gap-3">
               <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
               <p className="text-xs text-red-400 leading-relaxed">
-                This will permanently delete <span className="font-bold">{deleteConfirm.username}</span> and all their transactions. This cannot be undone.
+                This will permanently delete <span className="font-bold">{deleteConfirm.accountName}</span> and all their transactions. This cannot be undone.
               </p>
             </div>
             <div className="flex gap-3">

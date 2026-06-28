@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import ReviewTransfer from './assets/pages/reviewTransfer';
 import ConfirmTransfer from './assets/pages/confirmTransfer';
 import TransferSuccess from './assets/pages/transfer-success';
-import TransferFailed from './assets/pages/transferFailed';
+import TransferFailed from './assets/pages/transfer-failed';
 import Transactions from './assets/pages/transactions';
 import Notifications from './assets/pages/notifications';
 import ProtectedRoute from './assets/components/protectedRoute';

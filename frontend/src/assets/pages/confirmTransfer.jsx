@@ -18,6 +18,8 @@ const ConfirmTransfer = () => {
   const [error, setError] = useState("");
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
 
+  const TRANSFER_PIN = "0000";
+
   // Read real data from ReviewTransfer
   const recipient = state?.recipient ?? "—";
   const accountNumber = state?.accountNumber ?? "—";
@@ -49,8 +51,15 @@ const ConfirmTransfer = () => {
   };
 
   const handleConfirm = async () => {
+
     const pinCode = pin.join("");
     if (pinCode.length !== 4) return;
+    if (pinCode !== TRANSFER_PIN) {
+      setError("Incorrect PIN. Please try again.");
+      setPin(["", "", "", ""]); // ← clear the PIN inputs
+      inputRefs[0].current.focus(); // ← refocus first input
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -70,6 +79,7 @@ const ConfirmTransfer = () => {
     } catch (err) {
       console.error("Transfer error:", err);
       setError(err.response?.data?.message || "Transfer failed. Please try again.");
+      navigate("/transfer-failed");
     } finally {
       setLoading(false);
     }
