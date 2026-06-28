@@ -1,6 +1,9 @@
 import { useState } from "react";
 
 const SecurityAndPrivacy = () => {
+
+   const TRANSFER_PIN = "0000";
+
   const [setPinData, setSetPinData] = useState({
     pin: "",
     confirmPin: "",
@@ -20,18 +23,14 @@ const SecurityAndPrivacy = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("token");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   // SET PIN
   const handleSetPin = async (e) => {
     e.preventDefault();
 
+    if ( setPinData.pin !== TRANSFER_PIN) {
+       return setMessage("Reset your pin");
+    }
     if (setPinData.pin !== setPinData.confirmPin) {
       return setMessage("PINs do not match");
     }
