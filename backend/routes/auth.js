@@ -20,26 +20,24 @@ const generateToken = (user) => {
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
     const user = await User.create({
-      username,
+      firstName,
+      lastName,
+      accountName: `${firstName} ${lastName}`.trim(), // ← built from the two fields
       email,
       password: hashedPassword,
       accountNumber: generateAccountNumber(),
-      accountName: username,
     });
 
     const token = generateToken(user);
@@ -48,11 +46,12 @@ router.post('/register', async (req, res) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        accountName: user.accountName,
         email: user.email,
         balance: user.balance,
         accountNumber: user.accountNumber,
-        accountName: user.accountName,
         isAdmin: user.isAdmin,
         bank: "SecureBank",
       },
@@ -87,7 +86,8 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         balance: user.balance,
         accountNumber: user.accountNumber,

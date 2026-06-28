@@ -69,7 +69,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     const token = getToken();
-
     const fetchData = async () => {
       try {
         const [balanceRes, txRes] = await Promise.all([
@@ -122,7 +121,6 @@ const Dashboard = () => {
               <Bell className="w-6 h-6 text-gray-700" />
             </button>
             <button className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-              {/* <User className="w-5 h-5 text-blue-500" onClick={() => navigate('/profile')} /> */}
                <p className=" text-blue-500 font-semibold" onClick={() => navigate('/profile')} >  {getInitials(storedUser.username)}</p>
             </button>
           </div>

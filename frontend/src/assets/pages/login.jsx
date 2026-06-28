@@ -15,9 +15,9 @@ const Login = () => {
   const [notUser, setNotUser] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [form, setForm] = useState({
-    username: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -30,7 +30,7 @@ const Login = () => {
 
   const handleToggle = () => {
     setNotUser(!notUser);
-    setForm({ username: "", email: "", password: "", confirmPassword: "" });
+    setForm({ firstname: "", lastname: "", email: "", password: "", confirmPassword: "" });
     setError('');
   };
 
@@ -48,7 +48,9 @@ const Login = () => {
         }
 
         const res = await registerUser({
-          username: form.username,
+          firstName: form.firstname,
+          lastName: form.lastname,
+          accountName: `${form.firstname} ${form.lastname}`.trim(),
           email: form.email,
           password: form.password,
         });
@@ -112,11 +114,25 @@ const Login = () => {
               <FontAwesomeIcon icon={faUser} className="text-gray-400" />
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="First Name"
                 required
                 className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
-                value={form.username}
-                onChange={handleChange("username")}
+                value={form.firstname}
+                onChange={handleChange("firstname")}
+              />
+            </div>
+          )}
+
+           {notUser && (
+            <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3 gap-3 bg-white focus-within:border-blue-500 transition">
+              <FontAwesomeIcon icon={faUser} className="text-gray-400" />
+              <input
+                type="text"
+                placeholder="Last Name"
+                required
+                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                value={form.lastname}
+                onChange={handleChange("lastname")}
               />
             </div>
           )}
@@ -211,6 +227,3 @@ const Login = () => {
 }
 
 export default Login;
-
-
-
