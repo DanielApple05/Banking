@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
@@ -35,9 +35,9 @@ router.post('/register', async (req, res) => {
 
     // Create user
     const user = await User.create({
-      firstName,
-      lastName,
-      email,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.toLowerCase(),
       password: hashedPassword,
       accountNumber: generateAccountNumber(),
       accountName: `${firstName} ${lastName}`.trim(), 
@@ -62,7 +62,7 @@ router.post('/register', async (req, res) => {
 
   } catch (err) {
     console.error('Register error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message || 'Server error' });
   }
 });
 
@@ -71,8 +71,13 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -102,7 +107,7 @@ router.post('/login', async (req, res) => {
 
   } catch (err) {
     console.error('Login error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message || 'Server error' });
   }
 });
 

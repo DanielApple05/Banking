@@ -50,7 +50,6 @@ const Login = () => {
         const res = await registerUser({
           firstName: form.firstname,
           lastName: form.lastname,
-          accountName: `${form.firstname} ${form.lastname}`.trim(),
           email: form.email,
           password: form.password,
         });
