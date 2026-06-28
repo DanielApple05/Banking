@@ -38,7 +38,7 @@ router.post('/transfer', protect, async (req, res) => {
     if (sender.balance < transferAmount) {
       await Transaction.create({
         userId: sender._id,
-        title: `Transfer to ${recipient.accountName || recipient.accountNumber}`,
+        title: `Transfer to ${recipient.accountName }`,
         category: 'Transfer',
         amount: transferAmount,
         type: 'debit',
@@ -98,7 +98,7 @@ router.post('/transfer', protect, async (req, res) => {
 router.get('/balance', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-      .select('balance accountNumber accountName');
+      .select('balance accountNumber accountName firstName lastName');
     res.json(user);
   } catch (err) {
     console.error('Balance error:', err.message);
