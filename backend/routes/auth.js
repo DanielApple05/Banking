@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const protect = require('../middleware/auth')
 
 // Generate a random account number
 const generateAccountNumber = () => {
@@ -38,8 +39,6 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // hashed pin
-    // const hashedPin = await bcrypt.hash(pin, 10);
 
     // Create user
     const user = await User.create({
@@ -109,7 +108,6 @@ router.post('/login', async (req, res) => {
         accountName: user.accountName,
         isAdmin: user.isAdmin,
         bank: "SecureBank",
-        pin: "",
       },
     });
 
@@ -119,7 +117,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/set-pin', async (req, res) => {
+router.post('/set-pin', protect, async (req, res) => {
   try {
     const { pin } = req.body;
 
