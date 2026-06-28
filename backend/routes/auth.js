@@ -128,12 +128,7 @@ router.post('/set-pin', protect, async (req, res) => {
       });
     }
 
-    if (!/^\d{4}$/.test(pin)) {
-      return res.status(400).json({
-        message: 'PIN must be exactly 4 digits'
-      });
-    }
-
+   
     // Find current user
     const user = await User.findById(req.user.id);
 
@@ -167,7 +162,7 @@ router.post('/set-pin', protect, async (req, res) => {
     return res.status(500).json({
       message: error.message
     });
-  }
+  } 
 });
 
 module.exports = router;

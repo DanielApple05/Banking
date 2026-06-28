@@ -175,7 +175,7 @@ const handleSetPin = async (e) => {
             disabled={loading}
             className="bg-black text-white px-5 py-2 rounded"
           >
-            Save PIN
+            { loading ? "saving" : "Save PIN" }
           </button>
         </form>
       </div>
