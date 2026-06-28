@@ -111,6 +111,7 @@ router.post('/login', async (req, res) => {
         accountName: user.accountName,
         isAdmin: user.isAdmin,
         bank: "SecureBank",
+        pin: "",
       },
     });
 
