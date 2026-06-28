@@ -96,9 +96,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-
     const token = generateToken(user);
-
     res.json({
       token,
       user: {
@@ -118,6 +116,59 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err.message);
     res.status(500).json({ message: err.message || 'Server error' });
+  }
+});
+
+router.post('/set-pin', async (req, res) => {
+  try {
+    const { pin } = req.body;
+
+    // Validate input
+    if (!pin) {
+      return res.status(400).json({
+        message: 'PIN is required'
+      });
+    }
+
+    if (!/^\d{4}$/.test(pin)) {
+      return res.status(400).json({
+        message: 'PIN must be exactly 4 digits'
+      });
+    }
+
+    // Find current user
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
+
+    // Prevent overwriting existing pin
+    if (user.pin) {
+      return res.status(400).json({
+        message: 'PIN already exists. Use reset PIN instead.'
+      });
+    }
+
+    // Hash pin
+    const hashedPin = await bcrypt.hash(pin, 10);
+
+    user.pin = hashedPin;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: 'PIN set successfully'
+    });
+
+  } catch (error) {
+    console.error('SET PIN ERROR:', error);
+
+    return res.status(500).json({
+      message: error.message
+    });
   }
 });
 

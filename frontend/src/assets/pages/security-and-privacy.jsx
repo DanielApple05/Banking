@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const SecurityAndPrivacy = () => {
 
-   const TRANSFER_PIN = "0000";
+   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [setPinData, setSetPinData] = useState({
     pin: "",
@@ -27,24 +27,20 @@ const SecurityAndPrivacy = () => {
   // SET PIN
   const handleSetPin = async (e) => {
     e.preventDefault();
-
-    if ( setPinData.pin !== TRANSFER_PIN) {
-       return setMessage("Reset your pin");
-    }
+    
     if (setPinData.pin !== setPinData.confirmPin) {
       return setMessage("PINs do not match");
+    } 
+    if ( storedUser.pin !== "") {
+      return setMessage("Please reset your password")
     }
 
     try {
       setLoading(true);
-
-      const res = await API.post(
-        "/security/set-pin",
-        {
-          pin: setPinData.pin,
-        },
-        config
-      );
+      setMessage("")
+      const res = await setNewPin(
+        pin === storedUser.pin
+      )
 
       setMessage(res.data.message);
     } catch (err) {
