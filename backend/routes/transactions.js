@@ -3,6 +3,7 @@ const router = express.Router();
 const protect = require("../middleware/auth");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
+const bcrypt = require('bcryptjs'); 
 
 // GET /api/transactions — get logged-in user's transactions
 router.get("/", protect, async (req, res) => {
@@ -25,17 +26,17 @@ router.post("/transfer", protect, async (req, res) => {
     const sender = await User.findById(req.user.id);
     if (!sender) return res.status(404).json({ message: "User not found" });
     if (!recipientAccount)
-      return res.status(400).json({ message: "Recipient account is required" });
+      return res.status(401).json({ message: "Recipient account is required" });
     // Validate PIN
     if (!sender.pin) {
       return res
-        .status(400)
+        .status(401)
         .json({ message: "Please set a transaction PIN first." });
     }
 
     const isPinValid = await bcrypt.compare(pin, sender.pin);
     if (!isPinValid) {
-      return res.status(400).json({ message: "Incorrect PIN." });
+      return res.status(401).json({ message: "Incorrect PIN." });
     }
 
     const recipient = await User.findOne({ accountNumber: recipientAccount });
