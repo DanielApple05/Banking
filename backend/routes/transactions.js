@@ -38,7 +38,7 @@ router.post('/transfer', protect, async (req, res) => {
     if (sender.balance < transferAmount) {
       await Transaction.create({
         userId: sender._id,
-        title: `Transfer to ${recipient.accountName || recipient.firstName}`,
+        title: `Transfer to ${recipient.accountName || recipient.accountNumber}`,
         category: 'Transfer',
         amount: transferAmount,
         type: 'debit',
