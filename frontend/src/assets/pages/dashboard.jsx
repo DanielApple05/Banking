@@ -111,7 +111,7 @@ const Dashboard = () => {
         <div className="flex items-start justify-between mb-6 ">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-              Hello, {storedUser.username.split(' ')[0]
+              Hello, {storedUser.firstName.split(' ')[0]
                 || 'User'} <span>👋</span>
             </h1>
             <p className="text-gray-400 text-sm mt-0.5">{getGreeting()}</p>
@@ -121,7 +121,7 @@ const Dashboard = () => {
               <Bell className="w-6 h-6 text-gray-700" />
             </button>
             <button className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-               <p className=" text-blue-500 font-semibold" onClick={() => navigate('/profile')} >  {getInitials(storedUser.username)}</p>
+               <p className=" text-blue-500 font-semibold" onClick={() => navigate('/profile')} >  {getInitials(storedUser.accountName)}</p>
             </button>
           </div>
         </div>

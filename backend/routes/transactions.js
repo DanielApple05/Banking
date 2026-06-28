@@ -38,7 +38,7 @@ router.post('/transfer', protect, async (req, res) => {
     if (sender.balance < transferAmount) {
       await Transaction.create({
         userId: sender._id,
-        title: `Transfer to ${recipient.accountName || recipient.username}`,
+        title: `Transfer to ${recipient.accountName || recipient.firstName}`,
         category: 'Transfer',
         amount: transferAmount,
         type: 'debit',
@@ -59,7 +59,7 @@ router.post('/transfer', protect, async (req, res) => {
     // Sender's debit transaction
     const transaction = await Transaction.create({
       userId: sender._id,
-      title: `Transfer to ${recipient.accountName || recipient.username}`,
+      title: `Transfer to ${recipient.accountName || recipient.accountNumber }`,
       category: 'Transfer',
       amount: transferAmount,
       type: 'debit',
@@ -72,7 +72,7 @@ router.post('/transfer', protect, async (req, res) => {
     // Recipient's credit transaction — this is what shows as a notification
     await Transaction.create({
       userId: recipient._id,
-      title: `Transfer from ${sender.accountName || sender.username}`,
+      title: `Transfer from ${sender.accountName}`,
       category: 'Income',
       amount: transferAmount,
       type: 'credit',
@@ -98,7 +98,7 @@ router.post('/transfer', protect, async (req, res) => {
 router.get('/balance', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-      .select('balance accountNumber username accountName');
+      .select('balance accountNumber accountName');
     res.json(user);
   } catch (err) {
     console.error('Balance error:', err.message);
@@ -110,14 +110,14 @@ router.get('/balance', protect, async (req, res) => {
 router.get('/lookup/:accountNumber', protect, async (req, res) => {
   try {
     const user = await User.findOne({ accountNumber: req.params.accountNumber })
-      .select('username accountName accountNumber');
+      .select('accountName accountNumber');
 
     if (!user) {
       return res.status(404).json({ message: 'Account not found' });
     }
 
     res.json({
-      accountName: user.accountName || user.username,
+      accountName: user.accountName,
       accountNumber: user.accountNumber,
     });
   } catch (err) {
