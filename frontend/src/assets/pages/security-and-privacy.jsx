@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { setNewPin } from "../../api/auth";
+import { Eye, EyeClosed } from "lucide-react";
 
 const SecurityAndPrivacy = () => {
 
-   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [viewNewPin, setViewNewPin] = useState(false)
 
   const [setPinData, setSetPinData] = useState({
     pin: "",
@@ -25,45 +27,39 @@ const SecurityAndPrivacy = () => {
   const [loading, setLoading] = useState(false);
 
 
-// SET PIN
-const handleSetPin = async (e) => {
-  e.preventDefault();
-  
-  // Validate PINs match
-  if (setPinData.pin !== setPinData.confirmPin) {
-    return setMessage("PINs do not match");
-  }
-  
-  // Validate PIN is 4 digits
-  if (!/^\d{4}$/.test(setPinData.pin)) {
-    return setMessage("PIN must be exactly 4 digits");
-  }
-  
-  // Check if PIN already exists
-  if (storedUser.pin) {
-    return setMessage("PIN already exists. Please reset PIN instead");
-  }
+  // SET PIN
+  const handleSetPin = async (e) => {
+    e.preventDefault();
 
-  try {
-    setLoading(true);
-    setMessage("");
-    
-    // Send the correct PIN data
-    const res = await setNewPin({
-      pin: setPinData.pin
-    });
+    // Validate PINs match
+    if (setPinData.pin !== setPinData.confirmPin) {
+      return setMessage("PINs do not match");
+    }
 
-    setMessage(res.data.message);
-    setSetPinData({ pin: "", confirmPin: "" }); // Clear form
-  } catch (err) {
-    setMessage(
-      err.response?.data?.message || "Unable to set PIN"
-    );
-  } finally {
-    setLoading(false);
-     setMessage("");
-  }
-};
+    // Validate PIN is 4 digits
+    if (setPinData.pin.length < 4) {
+      return setMessage("PIN must be exactly 4 digits");
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+
+      // Send the correct PIN data
+      const res = await setNewPin({
+        pin: setPinData.pin
+      });
+
+      setMessage(res.data.message);
+      setSetPinData({ pin: "", confirmPin: "" }); // Clear form
+    } catch (err) {
+      setMessage(
+        err.response?.data?.message || "Unable to set PIN"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // RESET PIN
   const handleResetPin = async (e) => {
@@ -145,21 +141,26 @@ const handleSetPin = async (e) => {
         </h2>
 
         <form onSubmit={handleSetPin}>
-          <input
-            type="password"
-            maxLength="4"
-            placeholder="Enter PIN"
-            className="w-full border p-2 mb-3"
-            onChange={(e) =>
-              setSetPinData({
-                ...setPinData,
-                pin: e.target.value,
-              })
-            }
-          />
+          <div className=" relative flex justify-between">
+            <input
+              type={viewNewPin ?  "text" : "password"}
+              maxLength="4"
+              placeholder="Enter PIN"
+              className="w-full border p-2 mb-3 flex-1"
+              onChange={(e) =>
+                setSetPinData({
+                  ...setPinData,
+                  pin: e.target.value,
+                })
+              }
+            />
+            <div className="absolute right-5  top-2 z-10 " onClick={() => setViewNewPin(!viewNewPin)}>
+              { viewNewPin ? <Eye /> : <EyeClosed />}
+            </div>
+          </div>
 
           <input
-            type="password"
+            type={viewNewPin ?  "text" : "password"}
             maxLength="4"
             placeholder="Confirm PIN"
             className="w-full border p-2 mb-3"
@@ -175,7 +176,7 @@ const handleSetPin = async (e) => {
             disabled={loading}
             className="bg-black text-white px-5 py-2 rounded"
           >
-            { loading ? "saving" : "Save PIN" }
+            {loading ? "saving" : "Save PIN"}
           </button>
         </form>
       </div>

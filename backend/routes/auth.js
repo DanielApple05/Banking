@@ -117,6 +117,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+// set pin
 router.post('/set-pin', protect, async (req, res) => {
   try {
     const { pin } = req.body;
@@ -139,7 +141,7 @@ router.post('/set-pin', protect, async (req, res) => {
     }
 
     // Prevent overwriting existing pin
-    if (pin === user.pin) {
+    if (user.pin) {
       return res.status(400).json({
         message: 'PIN already exists. Use reset PIN instead.'
       });
