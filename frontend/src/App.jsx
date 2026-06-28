@@ -12,6 +12,7 @@ import Notifications from './assets/pages/notifications';
 import ProtectedRoute from './assets/components/protectedRoute';
 import AdminDashboard from './assets/pages/admin';
 import Profile from './assets/pages/profile';
+import SecurityAndPrivacy from './assets/pages/security-and-privacy';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} /> 
+        <Route path="/security-and-privacy" element={<SecurityAndPrivacy />} /> 
         <Route />
       </Routes>
     </>
