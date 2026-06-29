@@ -13,6 +13,7 @@ import ProtectedRoute from './assets/components/protectedRoute';
 import AdminDashboard from './assets/pages/admin';
 import Profile from './assets/pages/profile';
 import SecurityAndPrivacy from './assets/pages/security-and-privacy';
+import HelpCenter from './assets/pages/helpCenter';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/help" element={<HelpCenter/>} />
         {/* protected route */}
         <Route element={<ProtectedRoute />}></Route>
         <Route path="/dashboard" element={<Dashboard />} />

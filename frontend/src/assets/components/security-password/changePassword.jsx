@@ -5,7 +5,7 @@ import { Eye, EyeClosed } from "lucide-react";
 const ChangePassword = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const [viewNewPin, setViewNewPin] = useState(false)
+  const [viewPassword, setViewPassword] = useState(false)
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -20,13 +20,13 @@ const ChangePassword = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      return setPasswordMsg({ text: "All fields are required.", type: "error" });
+      return setPasswordMsg("All fields are required.");
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      return setPasswordMsg({ text: "Passwords do not match.", type: "error" });
+      return setPasswordMsg("Passwords do not match.");
     }
     if (passwordData.newPassword.length < 6) {
-      return setPasswordMsg({ text: "Password must be at least 6 characters.", type: "error" });
+      return setPasswordMsg("Password must be at least 6 characters.");
     }
 
     if (
@@ -48,6 +48,11 @@ const ChangePassword = () => {
       );
     } finally {
       setLoading(false);
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
     }
   };
 
@@ -65,21 +70,25 @@ const ChangePassword = () => {
         )}
 
         <form onSubmit={handleChangePassword}>
+          <div className=" relative flex justify-between">
+            <input
+              type={viewPassword ? "text" : "password"}
+              placeholder="Current Password"
+              className="w-full border p-2 mb-3"
+              onChange={(e) =>
+                setPasswordData({
+                  ...passwordData,
+                  currentPassword:
+                    e.target.value,
+                })
+              }
+            />
+            <div className="absolute right-5  top-2 z-10 " onClick={() => setViewPassword(!viewPassword)}>
+              {viewPassword ? <Eye /> : <EyeClosed />}
+            </div>
+          </div>
           <input
-            type="password"
-            placeholder="Current Password"
-            className="w-full border p-2 mb-3"
-            onChange={(e) =>
-              setPasswordData({
-                ...passwordData,
-                currentPassword:
-                  e.target.value,
-              })
-            }
-          />
-
-          <input
-            type="password"
+            type={viewPassword ? "text" : "password"}
             placeholder="New Password"
             className="w-full border p-2 mb-3"
             onChange={(e) =>
@@ -92,7 +101,7 @@ const ChangePassword = () => {
           />
 
           <input
-            type="password"
+            type={viewPassword ? "text" : "password"}
             placeholder="Confirm Password"
             className="w-full border p-2 mb-3"
             onChange={(e) =>

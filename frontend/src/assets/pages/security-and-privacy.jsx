@@ -11,7 +11,7 @@ const SecurityAndPrivacy = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto p-5">
+    <div className="min-h-screen bg-gray-200 flex flex-col max-w-md mx-auto p-5">
 
       <div className="flex items-center justify-between px-5 pt-6 pb-4">
         <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100 transition">

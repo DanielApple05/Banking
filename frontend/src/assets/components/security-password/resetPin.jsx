@@ -5,22 +5,25 @@ import { useState } from "react";
 const ResetPin = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const [viewNewPin, setViewNewPin] = useState(false)
+  const [viewPin, setViewPin] = useState(false)
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [resetPinData, setResetPinData] = useState({
     oldPin: "",
     newPin: "",
+    confirmNewPin: "",
   });
 
   const handleResetPin = async (e) => {
     e.preventDefault();
-    if (!resetPinData.oldPin || !resetPinData.newPin) return setResetMsg({ text: "All fields are required.", type: "error" });
-    if (resetPinData.newPin.length < 4) return setResetMsg({ text: "New PIN must be exactly 4 digits.", type: "error" });
+    if (!resetPinData.oldPin || !resetPinData.newPin || !resetPinData.confirmNewPin) return setMessage("All fields are required.");
+    if (resetPinData.newPin.length < 4) return setMessage("New PIN must be exactly 4 digits.");
+    if (resetPinData.newPin !== resetPinData.confirmNewPin) return setMessage("password mismatch")
 
     try {
       setLoading(true);
+      setMessage("");
       const res = await resetPin(resetPinData);
       setMessage(res.data.message);
     } catch (err) {
@@ -29,6 +32,11 @@ const ResetPin = () => {
       );
     } finally {
       setLoading(false);
+       setResetPinData({
+        oldPin: "",
+        newPin: "",
+        confirmNewPin: "",
+      })
     }
   };
   return (
@@ -45,34 +53,57 @@ const ResetPin = () => {
         )}
 
         <form onSubmit={handleResetPin}>
-          <input
-            type="password"
-            maxLength="4"
-            placeholder="Current PIN"
-            className="w-full border p-2 mb-3"
-            onChange={(e) => {
-               const value = e.target.value.replace(/[^0-9]/g, '');
-              setResetPinData({
-                ...resetPinData,
-                oldPin: value,
-              })
-            }}
-            value={setResetPinData.oldPin}
-          />
+          <div className=" relative flex justify-between">
+            <input
+              type={viewPin ? "tel" : "password"}
+              maxLength="4"
+              inputMode="numeric"
+              placeholder="Current PIN"
+              className="w-full border p-2 mb-3 flex-1"
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                setResetPinData({
+                  ...resetPinData,
+                  oldPin: value,
+                })
+              }}
+              value={resetPinData.oldPin}
+            />
+            <div className="absolute right-5  top-2 z-10 " onClick={() => setViewPin(!viewPin)}>
+              {viewPin ? <Eye /> : <EyeClosed />}
+            </div>
+          </div>
 
           <input
-            type="password"
+            type={viewPin ? "tel" : "password"}
             maxLength="4"
+            inputMode="numeric"
             placeholder="New PIN"
             className="w-full border p-2 mb-3"
             onChange={(e) => {
-               const value = e.target.value.replace(/[^0-9]/g, '');
+              const value = e.target.value.replace(/[^0-9]/g, '');
               setResetPinData({
                 ...resetPinData,
                 newPin: value,
               })
             }}
-            value={setResetPinData.newPin}
+            value={resetPinData.newPin}
+          />
+
+          <input
+            type={viewPin ? "tel" : "password"}
+            maxLength="4"
+            inputMode="numeric"
+            placeholder="Confirm New PIN"
+            className="w-full border p-2 mb-3"
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^0-9]/g, '');
+              setResetPinData({
+                ...resetPinData,
+                confirmNewPin: value,
+              })
+            }}
+            value={resetPinData.confirmNewPin}
           />
 
           <button

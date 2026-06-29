@@ -31,14 +31,10 @@ const SetNewPin = () => {
     try {
       setLoading(true);
       setMessage("");
-
-      // Send the correct PIN data
       const res = await setNewPin({
         pin: setPinData.pin
       });
-
       setMessage(res.data.message);
-      setSetPinData({ pin: "", confirmPin: "" }); // Clear form
     } catch (err) {
       setMessage(
         err.response?.data?.message || "Unable to set PIN"
