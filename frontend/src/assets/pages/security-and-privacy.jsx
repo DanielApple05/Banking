@@ -147,16 +147,20 @@ const SecurityAndPrivacy = () => {
         <form onSubmit={handleSetPin}>
           <div className=" relative flex justify-between">
             <input
-              type={viewNewPin ? "text" : "password"}
+              type={viewNewPin ? "tel" : "password"}
               maxLength="4"
+              inputMode="numeric"
               placeholder="Enter PIN"
               className="w-full border p-2 mb-3 flex-1"
-              onChange={(e) =>
+              onChange={(e) => {
+                // Only allow digits 0-9
+                const value = e.target.value.replace(/[^0-9]/g, '');
                 setSetPinData({
                   ...setPinData,
-                  pin: e.target.value,
+                  pin: value,
                 })
-              }
+              }}
+              value={setPinData.pin}
             />
             <div className="absolute right-5  top-2 z-10 " onClick={() => setViewNewPin(!viewNewPin)}>
               {viewNewPin ? <Eye /> : <EyeClosed />}
@@ -166,14 +170,18 @@ const SecurityAndPrivacy = () => {
           <input
             type={viewNewPin ? "text" : "password"}
             maxLength="4"
+            inputMode="numeric"
             placeholder="Confirm PIN"
             className="w-full border p-2 mb-3"
-            onChange={(e) =>
+            onChange={(e) => {
+              // Only allow digits 0-9
+              const value = e.target.value.replace(/[^0-9]/g, '');
               setSetPinData({
                 ...setPinData,
-                confirmPin: e.target.value,
+                confirmPin: value,
               })
-            }
+            }}
+            value={setPinData.confirmPin}
           />
 
           <button
