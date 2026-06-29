@@ -50,12 +50,14 @@ const ResetPin = () => {
             maxLength="4"
             placeholder="Current PIN"
             className="w-full border p-2 mb-3"
-            onChange={(e) =>
+            onChange={(e) => {
+               const value = e.target.value.replace(/[^0-9]/g, '');
               setResetPinData({
                 ...resetPinData,
-                oldPin: e.target.value,
+                oldPin: value,
               })
-            }
+            }}
+            value={setResetPinData.oldPin}
           />
 
           <input
@@ -63,12 +65,14 @@ const ResetPin = () => {
             maxLength="4"
             placeholder="New PIN"
             className="w-full border p-2 mb-3"
-            onChange={(e) =>
+            onChange={(e) => {
+               const value = e.target.value.replace(/[^0-9]/g, '');
               setResetPinData({
                 ...resetPinData,
-                newPin: e.target.value,
+                newPin: value,
               })
-            }
+            }}
+            value={setResetPinData.newPin}
           />
 
           <button
