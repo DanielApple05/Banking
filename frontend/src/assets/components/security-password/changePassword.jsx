@@ -19,6 +19,15 @@ const ChangePassword = () => {
   // CHANGE PASSWORD
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      return setPasswordMsg({ text: "All fields are required.", type: "error" });
+    }
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      return setPasswordMsg({ text: "Passwords do not match.", type: "error" });
+    }
+    if (passwordData.newPassword.length < 6) {
+      return setPasswordMsg({ text: "Password must be at least 6 characters.", type: "error" });
+    }
 
     if (
       passwordData.newPassword !==
@@ -29,17 +38,7 @@ const ChangePassword = () => {
 
     try {
       setLoading(true);
-
-      const res = await API.put(
-        "/security/change-password",
-        {
-          currentPassword:
-            passwordData.currentPassword,
-          newPassword:
-            passwordData.newPassword,
-        },
-        config
-      );
+      const res = await changePassword(passwordData);
 
       setMessage(res.data.message);
     } catch (err) {
@@ -105,14 +104,14 @@ const ChangePassword = () => {
             }
           />
 
-                   <button
-              type="submit"
-              disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl text-sm transition text-white
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl text-sm transition text-white
                 ${loading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-            >
-              {loading ? "please wait..." : "Change Password"}
-            </button>
+          >
+            {loading ? "please wait..." : "Change Password"}
+          </button>
         </form>
       </div>
     </>
