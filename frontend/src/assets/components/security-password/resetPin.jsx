@@ -1,123 +1,124 @@
 import { resetPin } from "../../../api/auth";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 const ResetPin = () => {
-
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const [viewPin, setViewPin] = useState(false)
-  const [message, setMessage] = useState("");
+  const [viewPin, setViewPin] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
-
   const [resetPinData, setResetPinData] = useState({
     oldPin: "",
     newPin: "",
     confirmNewPin: "",
   });
 
-  const handleResetPin = async (e) => {
-    e.preventDefault();
-    if (!resetPinData.oldPin || !resetPinData.newPin || !resetPinData.confirmNewPin) return setMessage("All fields are required.");
-    if (resetPinData.newPin.length < 4) return setMessage("New PIN must be exactly 4 digits.");
-    if (resetPinData.newPin !== resetPinData.confirmNewPin) return setMessage("password mismatch")
+  const handleResetPin = async () => {
+    if (!resetPinData.oldPin || !resetPinData.newPin || !resetPinData.confirmNewPin)
+      return setMessage({ text: "All fields are required.", type: "error" });
+    if (resetPinData.newPin.length < 4)
+      return setMessage({ text: "New PIN must be exactly 4 digits.", type: "error" });
+    if (resetPinData.newPin !== resetPinData.confirmNewPin)
+      return setMessage({ text: "New PINs do not match.", type: "error" });
 
     try {
       setLoading(true);
-      setMessage("");
+      setMessage({ text: "", type: "" });
       const res = await resetPin(resetPinData);
-      setMessage(res.data.message);
+      setMessage({ text: res.data.message, type: "success" });
     } catch (err) {
-      setMessage(
-        err.response?.data?.message || "Unable to reset PIN"
-      );
+      setMessage({ text: err.response?.data?.message || "Unable to reset PIN", type: "error" });
     } finally {
       setLoading(false);
-       setResetPinData({
-        oldPin: "",
-        newPin: "",
-        confirmNewPin: "",
-      })
+      setResetPinData({ oldPin: "", newPin: "", confirmNewPin: "" });
     }
   };
+
+  const pinsMatch =
+    resetPinData.newPin &&
+    resetPinData.confirmNewPin &&
+    resetPinData.newPin === resetPinData.confirmNewPin;
+
+  const inputClass =
+    "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-11 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
+
   return (
-    <>
-      <div className="border rounded p-5 mb-6">
-        <h2 className="text-xl font-semibold mb-4">
-          Reset PIN
-        </h2>
+    <div className="flex flex-col gap-3">
 
-        {message && (
-          <div className="bg-gray-100 p-3 rounded mb-4">
-            {message}
-          </div>
-        )}
+      {message.text && (
+        <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium
+          ${message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}
+        >
+          {message.type === "success"
+            ? <CheckCircle className="w-4 h-4 shrink-0" />
+            : <AlertCircle className="w-4 h-4 shrink-0" />}
+          {message.text}
+        </div>
+      )}
 
-        <form onSubmit={handleResetPin}>
-          <div className=" relative flex justify-between">
-            <input
-              type={viewPin ? "tel" : "password"}
-              maxLength="4"
-              inputMode="numeric"
-              placeholder="Current PIN"
-              className="w-full border p-2 mb-3 flex-1"
-              onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, '');
-                setResetPinData({
-                  ...resetPinData,
-                  oldPin: value,
-                })
-              }}
-              value={resetPinData.oldPin}
-            />
-            <div className="absolute right-5  top-2 z-10 " onClick={() => setViewPin(!viewPin)}>
-              {viewPin ? <Eye /> : <EyeClosed />}
-            </div>
-          </div>
-
-          <input
-            type={viewPin ? "tel" : "password"}
-            maxLength="4"
-            inputMode="numeric"
-            placeholder="New PIN"
-            className="w-full border p-2 mb-3"
-            onChange={(e) => {
-              const value = e.target.value.replace(/[^0-9]/g, '');
-              setResetPinData({
-                ...resetPinData,
-                newPin: value,
-              })
-            }}
-            value={resetPinData.newPin}
-          />
-
-          <input
-            type={viewPin ? "tel" : "password"}
-            maxLength="4"
-            inputMode="numeric"
-            placeholder="Confirm New PIN"
-            className="w-full border p-2 mb-3"
-            onChange={(e) => {
-              const value = e.target.value.replace(/[^0-9]/g, '');
-              setResetPinData({
-                ...resetPinData,
-                confirmNewPin: value,
-              })
-            }}
-            value={resetPinData.confirmNewPin}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl text-sm transition text-white
-                ${loading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-          >
-            {loading ? "resetting..." : "Reset PIN"}
-          </button>
-        </form>
+      {/* Current PIN */}
+      <div className="relative">
+        <input
+          type={viewPin ? "tel" : "password"}
+          maxLength="4"
+          inputMode="numeric"
+          placeholder="Current PIN"
+          className={inputClass}
+          onChange={(e) =>
+            setResetPinData({ ...resetPinData, oldPin: e.target.value.replace(/[^0-9]/g, "") })
+          }
+          value={resetPinData.oldPin}
+        />
+        <button
+          type="button"
+          onClick={() => setViewPin(!viewPin)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+        >
+          {viewPin ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+        </button>
       </div>
-    </>
+
+      {/* New PIN */}
+      <input
+        type={viewPin ? "tel" : "password"}
+        maxLength="4"
+        inputMode="numeric"
+        placeholder="New PIN"
+        className={inputClass}
+        onChange={(e) =>
+          setResetPinData({ ...resetPinData, newPin: e.target.value.replace(/[^0-9]/g, "") })
+        }
+        value={resetPinData.newPin}
+      />
+
+      {/* Confirm New PIN */}
+      <div className="relative">
+        <input
+          type={viewPin ? "tel" : "password"}
+          maxLength="4"
+          inputMode="numeric"
+          placeholder="Confirm new PIN"
+          className={`w-full bg-gray-50 border rounded-xl px-4 py-3 pr-11 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition
+            ${pinsMatch ? "border-green-400 focus:ring-green-400" : "border-gray-200 focus:ring-blue-500"}`}
+          onChange={(e) =>
+            setResetPinData({ ...resetPinData, confirmNewPin: e.target.value.replace(/[^0-9]/g, "") })
+          }
+          value={resetPinData.confirmNewPin}
+        />
+        {pinsMatch && (
+          <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
+        )}
+      </div>
+
+      <button
+        onClick={handleResetPin}
+        disabled={loading}
+        className={`w-full py-3 rounded-xl text-sm font-semibold text-white transition mt-1
+          ${loading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"}`}
+      >
+        {loading ? "Resetting..." : "Reset PIN"}
+      </button>
+    </div>
   );
-}
+};
 
 export default ResetPin;
