@@ -14,6 +14,7 @@ import AdminDashboard from './assets/pages/admin';
 import Profile from './assets/pages/profile';
 import SecurityAndPrivacy from './assets/pages/security-and-privacy';
 import HelpCenter from './assets/pages/helpCenter';
+import TermsAndPrivacy from './assets/pages/terms-privacy';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/security-and-privacy" element={<SecurityAndPrivacy />} /> 
+        <Route path="/legal" element={<TermsAndPrivacy />} /> 
         <Route />
       </Routes>
     </>

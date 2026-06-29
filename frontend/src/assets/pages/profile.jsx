@@ -62,7 +62,7 @@ const Profile = () => {
       section: "Support",
       items: [
         { label: "Help Center", icon: <HelpCircle className="w-4 h-4 text-green-500" />, bg: "bg-green-50", path: "/help" },
-        { label: "Terms & Privacy", icon: <FileText className="w-4 h-4 text-gray-400" />, bg: "bg-gray-100", path: null },
+        { label: "Terms & Privacy", icon: <FileText className="w-4 h-4 text-gray-400" />, bg: "bg-gray-100", path: "/legal" },
       ],
     },
   ];
