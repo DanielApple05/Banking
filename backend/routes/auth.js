@@ -167,4 +167,48 @@ router.post('/set-pin', protect, async (req, res) => {
   } 
 });
 
+// PUT /api/auth/reset-pin
+router.put('/reset-pin', protect, async (req, res) => {
+  const { oldPin, newPin } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user || !user.pin) {
+      return res.status(400).json({ message: 'No PIN set. Please set a PIN first.' });
+    }
+
+    const isMatch = await bcrypt.compare(oldPin, user.pin);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current PIN is incorrect.' });
+    }
+
+    user.pin = await bcrypt.hash(newPin, 10);
+    await user.save();
+
+    res.json({ message: 'PIN reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PUT /api/auth/change-password
+router.put('/change-password', protect, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect.' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: 'Password changed successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
