@@ -142,7 +142,7 @@ const Transfer = () => {
           <ArrowLeft className="w-5 h-5 text-gray-800" />
         </button>
         <h1 className="text-lg font-extrabold text-gray-900">Transfer Money</h1>
-        <button className="flex items-center gap-1 text-blue-600 text-sm font-semibold hover:underline">
+        <button onClick={() => navigate("/help")} className="flex items-center gap-1 text-blue-600 text-sm font-semibold hover:underline">
           <HelpCircle className="w-4 h-4" /> Help
         </button>
       </div>
