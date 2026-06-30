@@ -118,7 +118,7 @@ const Transactions = () => {
                         state: {
                           amount: tx.amount,
                           recipient: tx.recipient,
-                          accountNumber: tx.recipient,
+                          accountNumber: tx.accountNumber,
                           bank: tx.bank,
                           narration: tx.narration,
                           transactionId: tx._id,

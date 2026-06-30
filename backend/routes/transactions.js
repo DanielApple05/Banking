@@ -84,6 +84,7 @@ router.post("/transfer", protect, async (req, res) => {
       recipient: recipient.accountName,
       bank,
       narration,
+      accountNumber,
     });
 
     // Recipient's credit transaction — this is what shows as a notification
