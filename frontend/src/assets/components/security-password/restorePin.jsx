@@ -1,7 +1,7 @@
-import { AlertCircle, CheckCircle } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
 import { CheckCircle, AlertCircle } from "lucide-react";
+import { restoreDefaultPin } from '../../../api/auth';
 
 
 const RestorePin = () => {
@@ -13,10 +13,14 @@ const RestorePin = () => {
   const handleRestorePin = async (e) => {
     e.preventDefault();
 
+    if ( confirmEmail === "") {
+      return setMessage({ text: "enter your email", type: "error" })
+    }
+
     try {
       setLoading(true);
       setMessage({ text: "", type: "" });
-      const res = await setConfirmEmail(confirmEmail);
+      const res = await restoreDefaultPin(confirmEmail);
       setMessage({ text: res.data.message, type: "success"});
     } catch (error) {
       setMessage({ text: res.data.message || "Unable to Restore Pin", type: "error"});
@@ -27,7 +31,7 @@ const RestorePin = () => {
   }
 
   return (
-    <div>
+    <div className='flex flex-col gap-4'>
       {message.text && (
         <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium
           ${message.type === "success"
@@ -44,9 +48,9 @@ const RestorePin = () => {
         <input
           type='email'
           placeholder="enter your email"
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-11 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-11 mb-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           value={confirmEmail}
-          onChange={(e) => e.target.value
+          onChange={(e) => setConfirmEmail(e.target.value)
           }
         />
 
