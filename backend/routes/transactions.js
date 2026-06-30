@@ -76,7 +76,7 @@ router.post("/transfer", protect, async (req, res) => {
     // Sender's debit transaction
     const transaction = await Transaction.create({
       userId: sender._id,
-      title: `Transfer to ${recipient.accountName || recipient.accountNumber}`,
+      title: `Transfer to ${recipient.accountNumber || recipient.accountName }`,
       category: "Transfer",
       amount: transferAmount,
       type: "debit",
