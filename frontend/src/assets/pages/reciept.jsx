@@ -221,7 +221,7 @@ const Reciept = () => {
             <div>
               <p className="text-xs text-gray-400 mb-1">To</p>
               <p className="text-sm font-bold text-gray-900">{recipient}</p>
-              <p className="text-xs text-gray-400">**** {accountNumber.slice ? accountNumber.slice(-4) : accountNumber} • {bank}</p>
+              <p className="text-xs text-gray-400">**** { accountNumber? accountNumber.slice(-4) : accountNumber} • {bank}</p>
             </div>
             {narration && narration !== "—" && (
               <div>

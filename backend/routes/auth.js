@@ -19,28 +19,23 @@ const generateToken = (user) => {
   );
 };
 
-// POST /api/auth/register
+  //register
 router.post('/register', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
-    // Validate required fields exist
+   
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-
-    // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-
-    // Create user
     const user = await User.create({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -129,9 +124,6 @@ router.post('/set-pin', protect, async (req, res) => {
         message: 'PIN is required'
       });
     }
-
-   
-    // Find current user
     const user = await User.findById(req.user.id);
 
     if (!user) {
@@ -139,8 +131,6 @@ router.post('/set-pin', protect, async (req, res) => {
         message: 'User not found'
       });
     }
-
-    // Prevent overwriting existing pin
     if (user.pin) {
       return res.status(400).json({
         message: 'PIN already exists. Use reset PIN instead.'
@@ -167,7 +157,7 @@ router.post('/set-pin', protect, async (req, res) => {
   } 
 });
 
-// PUT /api/auth/reset-pin
+   //reset-pin
 router.put('/reset-pin', protect, async (req, res) => {
   const { oldPin, newPin } = req.body;
   try {
@@ -190,7 +180,7 @@ router.put('/reset-pin', protect, async (req, res) => {
   }
 });
 
-// PUT /api/auth/change-password
+    //change-password
 router.put('/change-password', protect, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   try {
