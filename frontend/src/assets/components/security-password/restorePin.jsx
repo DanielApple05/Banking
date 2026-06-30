@@ -13,27 +13,17 @@ const RestorePin = () => {
   const handleRestorePin = async (e) => {
     e.preventDefault();
 
-    const email = confirmEmail.trim();
-
-    if (!email) {
-      return setMessage({
-        text: "Enter your email",
-        type: "error"
-      });
-    }
-
     try {
       setLoading(true);
       setMessage({ text: "", type: "" });
 
-      const res = await restoreDefaultPin(email);
+      const res = await restoreDefaultPin(confirmEmail);
 
       setMessage({
         text: res.data.message,
         type: "success"
       });
 
-      // Clear only after success
       setConfirmEmail("");
 
     } catch (error) {

@@ -214,7 +214,6 @@ router.put('/change-password', protect, async (req, res) => {
 // PUT /api/auth/restore-default-pin
 router.put('/restore-default-pin', protect, async (req, res) => {
   const { confirmEmail } = req.body;
-
   try {
     const user = await User.findById(req.user.id);
 
