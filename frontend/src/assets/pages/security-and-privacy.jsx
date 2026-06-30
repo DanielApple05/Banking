@@ -3,6 +3,7 @@ import SetNewPin from "../components/security-password/setNewPin";
 import ResetPin from "../components/security-password/resetPin";
 import ChangePassword from "../components/security-password/changePassword";
 import { useNavigate } from "react-router-dom";
+import RestorePin from "../components/security-password/restorePin";
 
 const SecurityAndPrivacy = () => {
   const navigate = useNavigate();
@@ -83,6 +84,11 @@ const SecurityAndPrivacy = () => {
           </div>
         </div>
 
+        { /* Restore Pin  */}
+
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm p-4">
+          <RestorePin />
+        </div>
       </div>
     </div>
   );
