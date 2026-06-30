@@ -62,6 +62,7 @@ router.post("/transfer", protect, async (req, res) => {
         status: "Failed",
         recipient: recipientAccount,
         bank,
+        accountNumber: recipient.accountNumber,
         narration,
       });
       return res.status(400).json({ message: "Insufficient funds" });
@@ -84,7 +85,7 @@ router.post("/transfer", protect, async (req, res) => {
       recipient: recipient.accountName,
       bank,
       narration,
-      accountNumber,
+      accountNumber: recipient.accountNumber
     });
 
     // Recipient's credit transaction — this is what shows as a notification
