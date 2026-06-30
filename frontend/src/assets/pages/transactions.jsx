@@ -114,6 +114,19 @@ const Transactions = () => {
                   return (
                     <button
                       key={tx._id}
+                       onClick={() => navigate('/receipt', {
+                        state: {
+                          amount: tx.amount,
+                          recipient: tx.recipient,
+                          accountNumber: tx.recipient,
+                          bank: tx.bank,
+                          narration: tx.narration,
+                          transactionId: tx._id,
+                          status: tx.status,
+                          date: tx.createdAt,
+                        }
+                      })
+                      }
                       className="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 transition text-left"
                     >
                       <div className={`w-11 h-11 rounded-full ${bg} flex items-center justify-center shrink-0`}>

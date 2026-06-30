@@ -81,7 +81,7 @@ router.post("/transfer", protect, async (req, res) => {
       amount: transferAmount,
       type: "debit",
       status: "Successful",
-      recipient: recipientAccount,
+      recipient: sender.recipient,
       bank,
       narration,
     });
@@ -94,7 +94,7 @@ router.post("/transfer", protect, async (req, res) => {
       amount: transferAmount,
       type: "credit",
       status: "Successful",
-      recipient: sender.accountNumber,
+      recipient: recipient.accountName || "YOU",
       bank,
       narration,
     });

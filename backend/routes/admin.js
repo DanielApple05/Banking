@@ -42,7 +42,7 @@ router.patch('/users/:id/credit', protect, adminOnly, async (req, res) => {
 
     const transaction = await Transaction.create({
       userId: user._id,
-      title: `Credit to ${ user.accountName || user.accountNumber || "" }`,
+      title: `Credit to ${ user.recipient || user.accountNumber || "" }`,
       category: 'Income',
       amount: Number(amount),
       type: 'credit',
