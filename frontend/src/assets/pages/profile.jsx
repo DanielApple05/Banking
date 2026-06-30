@@ -53,7 +53,7 @@ const Profile = () => {
     {
       section: "Account",
       items: [
-        { label: "Personal Information", icon: <User className="w-4 h-4 text-blue-500" />, bg: "bg-blue-50", path: null },
+        { label: "Personal Information", icon: <User className="w-4 h-4 text-blue-500" />, bg: "bg-blue-50", path: "/personal-information" },
         { label: "Notifications", icon: <Bell className="w-4 h-4 text-purple-500" />, bg: "bg-purple-50", path: "/notifications" },
         { label: "Security & Password", icon: <Lock className="w-4 h-4 text-orange-500" />, bg: "bg-orange-50", path: "/security-and-privacy" },
       ],

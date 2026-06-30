@@ -15,6 +15,7 @@ import Profile from './assets/pages/profile';
 import SecurityAndPrivacy from './assets/pages/security-and-privacy';
 import HelpCenter from './assets/pages/helpCenter';
 import TermsAndPrivacy from './assets/pages/terms-privacy';
+import PersonalInformation from './assets/pages/personalInformation';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/security-and-privacy" element={<SecurityAndPrivacy />} /> 
         <Route path="/legal" element={<TermsAndPrivacy />} /> 
+        <Route path="/personal-information" element={<PersonalInformation />} />
         <Route />
       </Routes>
     </>
