@@ -14,17 +14,17 @@ const Notifications = () => {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = getToken();
     const user = getUserFromToken(token);
-
     const fetchTransactions = async () => {
       try {
         const res = await getTransactions();
         setTransactions(res.data || []);
       } catch (err) {
-        console.error("Failed to fetch notifications:", err);
+        setError({ message: "Failed to fetch notifications" });
         if (err.response?.status === 401) {
           localStorage.clear();
           navigate("/");
@@ -73,7 +73,11 @@ const Notifications = () => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-5 py-6">
-
+        {error && (
+          <div className="flex flex-col items-center justify-center py-24">
+            <p className="text-sm text-red-500 font-medium">{error.message}</p>
+          </div>
+        )}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3" />

@@ -24,7 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/help" element={<HelpCenter/>} />
+        <Route path="/help" element={<HelpCenter />} />
         {/* protected route */}
         <Route element={<ProtectedRoute />}></Route>
         <Route path="/dashboard" element={<Dashboard />} />
@@ -35,9 +35,9 @@ function App() {
         <Route path="/transfer-failed" element={<TransferFailed />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} /> 
-        <Route path="/security-and-privacy" element={<SecurityAndPrivacy />} /> 
-        <Route path="/legal" element={<TermsAndPrivacy />} /> 
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/security-and-privacy" element={<SecurityAndPrivacy />} />
+        <Route path="/legal" element={<TermsAndPrivacy />} />
         <Route path="/personal-information" element={<PersonalInformation />} />
         <Route path="/receipt" element={<Reciept />} />
         <Route />
