@@ -118,7 +118,6 @@ router.post('/set-pin', protect, async (req, res) => {
   try {
     const { pin } = req.body;
 
-    // Validate input
     if (!pin) {
       return res.status(400).json({
         message: 'PIN is required'
@@ -139,7 +138,6 @@ router.post('/set-pin', protect, async (req, res) => {
 
     // Hash pin
     const hashedPin = await bcrypt.hash(pin, 10);
-
     user.pin = hashedPin;
 
     await user.save();
